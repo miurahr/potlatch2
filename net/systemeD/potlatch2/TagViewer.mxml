@@ -215,9 +215,9 @@
   <mx:Script><![CDATA[
       import net.systemeD.halcyon.connection.*;
       import net.systemeD.halcyon.MapPaint;
+      import net.systemeD.halcyon.Globals;
       import net.systemeD.potlatch2.mapfeatures.*;
       import net.systemeD.potlatch2.utils.*;
-
       import mx.collections.*;
       import mx.containers.*;
       import mx.events.*;
@@ -749,7 +749,10 @@
       }
 
       public function loadFeatures():void {
-          mapFeatures = MapFeatures.getInstance();
+            if (loaderInfo.parameters['locale']) {
+                Globals.vars.locale = loaderInfo.parameters['locale'];
+            }
+            mapFeatures = MapFeatures.getInstance();
       //    stack.removeChild(membersVBox); // remove by default, will be added if relation
       }
 
