@@ -7,7 +7,8 @@ package net.systemeD.potlatch2 {
     import flash.text.TextField;
     import flash.text.TextFormat;
 
-
+    import net.systemeD.halcyon.Globals;
+    
     public class Preloader extends net.systemeD.potlatch2.PreloaderDisplayBase {
 
        [Embed("../../../embedded/potlatch2logo.png") ]
@@ -38,6 +39,7 @@ package net.systemeD.potlatch2 {
 
             //creates all visual elements
             createAssets();
+            Globals.vars.locale = loaderInfo.parameters['locale'];
         }
         //this is our "animation" bit
         override protected function draw():void

@@ -749,9 +749,6 @@
       }
 
       public function loadFeatures():void {
-            if (loaderInfo.parameters['locale']) {
-                Globals.vars.locale = loaderInfo.parameters['locale'];
-            }
             mapFeatures = MapFeatures.getInstance();
       //    stack.removeChild(membersVBox); // remove by default, will be added if relation
       }
