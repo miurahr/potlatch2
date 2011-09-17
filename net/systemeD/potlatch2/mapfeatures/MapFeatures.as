@@ -37,9 +37,6 @@ package net.systemeD.potlatch2.mapfeatures {
             var xmlLoader:NestedXMLLoader = new NestedXMLLoader();
             xmlLoader.addEventListener(Event.COMPLETE, onFeatureLoad);
             
-            if (loaderInfo.parameters['locale']) {
-                Globals.vars.locale = loaderInfo.parameters['locale'];
-            }
             if (Globals.vars.locale != null){
                 xmlLoader.load("map_features/map_features" + "-" + Globals.vars.locale + ".xml");
             } else {
