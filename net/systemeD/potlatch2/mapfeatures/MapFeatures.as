@@ -1,4 +1,5 @@
 package net.systemeD.potlatch2.mapfeatures {
+    import mx.core.Application;
 
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -35,7 +36,9 @@ package net.systemeD.potlatch2.mapfeatures {
         protected function loadFeatures():void {
             var xmlLoader:NestedXMLLoader = new NestedXMLLoader();
             xmlLoader.addEventListener(Event.COMPLETE, onFeatureLoad);
-            xmlLoader.load("map_features.xml");
+            
+            xmlLoader.load("map_features/map_features.xml");
+            xmlLoader.load("map_features/map_features" + "-" + Application.application.currentLocale + ".xml");
         }
 
         /** The loaded source XML file itself. */

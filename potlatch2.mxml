@@ -122,6 +122,7 @@
 		public var toolbox:Toolbox;
         public var bugLoader:BugLoader;
         public var bikeShopLoader:BikeShopLoader;
+        public var currentLocale:String;
 
 		private var savecount:uint=0;
 		private var loadcount:uint=0;
@@ -140,10 +141,10 @@
 			loader.load(new URLRequest("FontLibrary.swf"));  
 
             if (loaderInfo.parameters['locale']) {
-                var uselocale:String = loaderInfo.parameters['locale'];
-                dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE,uselocale));
+                currentLocale = loaderInfo.parameters['locale'];
+                dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, currentLocale));
                 dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, 'en_US'));
-                resourceManager.localeChain = [uselocale,'en_US'];
+                resourceManager.localeChain = [currentLocale, 'en_US'];
             }
 		}
 		
