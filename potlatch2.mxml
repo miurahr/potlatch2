@@ -132,9 +132,6 @@
         include "version.as";
 
 		private function startInit():void {
-            /* For reasons that I don't yet understand, the en_US locale is the default and doesn't work at all. */
-            /* Change this to another locale (e.g. fr_FR) to see the differences. */
-
 			// Load font and don't do anything until that's done
 			var loader:Loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, continueInit);
@@ -143,7 +140,7 @@
             if (loaderInfo.parameters['locale']) {
                 Globals.vars.locale = loaderInfo.parameters['locale'];
                 dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, loaderInfo.parameters['locale']));
-                dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, 'en_US'));
+                dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, 'en_US')); // think en_US is default
                 resourceManager.localeChain = [loaderInfo.parameters['locale'], 'en_US'];
             }
 		}
