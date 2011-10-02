@@ -17,6 +17,7 @@ Many icons used in halcyon/potlatch2 are based on the awesome CC0-licensed SJJB 
 * Flash debug player - http://www.adobe.com/support/flashplayer/downloads.html
 * Basically you might as well just sell your soul to Adobe
 * Ant
+* Java 1.6 
 
 If you happen to have Adobe Flex Builder 3/Flash Builder 4, you can create a project and import files into it. 
 See http://wiki.openstreetmap.org/wiki/Potlatch_2/Developer_Documentation for details.

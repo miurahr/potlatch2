@@ -216,6 +216,7 @@
   <fx:Script><![CDATA[
       import net.systemeD.halcyon.connection.*;
       import net.systemeD.halcyon.MapPaint;
+      import net.systemeD.halcyon.Globals;
       import net.systemeD.potlatch2.mapfeatures.*;
       import net.systemeD.potlatch2.utils.*;
       import net.systemeD.controls.CollapsiblePanel;
@@ -805,8 +806,8 @@
       }
 
       public function loadFeatures():void {
-          mapFeatures = MapFeatures.getInstance();
-          stack.removeChild(membersVBox); // remove by default, will be added if relation
+            mapFeatures = MapFeatures.getInstance();
+      //    stack.removeChild(membersVBox); // remove by default, will be added if relation
       }
 
       /** Open up a new browser page, showing the help page as defined in Map Features XML file .*/

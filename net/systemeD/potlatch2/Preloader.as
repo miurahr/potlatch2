@@ -8,7 +8,8 @@ package net.systemeD.potlatch2 {
     import flash.text.TextFormat;
     import net.systemeD.halcyon.ImageBank;
 
-
+    import net.systemeD.halcyon.Globals;
+    
     public class Preloader extends net.systemeD.potlatch2.PreloaderDisplayBase {
 
        [Embed("../../../embedded/potlatch2logo.png") ]
@@ -52,6 +53,7 @@ package net.systemeD.potlatch2 {
 					ImageBank.getInstance().loadFromZip(asset[0],asset[1]);
 				}
 			}
+            Globals.vars.locale = loaderInfo.parameters['locale'];
         }
 
 		override protected function initProgressHandler(e:Event):void {

@@ -1,11 +1,11 @@
 package net.systemeD.potlatch2.mapfeatures {
-
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.net.*;
-    
+
     import net.systemeD.halcyon.NestedXMLLoader;
     import net.systemeD.halcyon.connection.*;
+    import net.systemeD.halcyon.Globals;
 
     /** All the information about all available map features that can be selected by the user or matched against entities in the map.
     * The list of map features is populated from an XML file the first time the MapFeatures instance is accessed.
@@ -33,9 +33,17 @@ package net.systemeD.potlatch2.mapfeatures {
 
         /** Loads list of map features from XML file which it first retrieves. */
         protected function loadFeatures():void {
+        
             var xmlLoader:NestedXMLLoader = new NestedXMLLoader();
             xmlLoader.addEventListener(Event.COMPLETE, onFeatureLoad);
-            xmlLoader.load("map_features.xml");
+            
+            if (Globals.vars.locale != null){
+                // FIXME: need to test existence of localized map_features XML file before load.
+                xmlLoader.load("map_features/map_features" + "-" + Globals.vars.locale + ".xml");
+            } else {
+                xmlLoader.load("map_features/map_features.xml");
+            }
+            
         }
 
         /** The loaded source XML file itself. */
