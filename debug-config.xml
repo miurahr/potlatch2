@@ -6,6 +6,6 @@
       <keep-generated-actionscript>true</keep-generated-actionscript>
       <optimize>false</optimize>
       <verbose-stacktraces>true</verbose-stacktraces>
-      <incremental>true</incremental>
+      <incremental>false</incremental>
    </compiler>
 </flex-config>
