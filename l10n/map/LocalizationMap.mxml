@@ -23,23 +23,24 @@
       import net.systemeD.potlatch2.save.SaveDialog;
 
       import net.systemeD.potlatch2.options.OptionsDialog;
-      
+
       private function onLocaleChanged(event:Event):void {
           var rMngr : IResourceManager = ResourceManager.getInstance();
           var sri : ResourceInjector = event.target as ResourceInjector;
           var options : Array = [
-                                 { label : rMngr.getString('p2_main','main.gps_data') },
-                                 { label : rMngr.getString('p2_main','main.my_tracks') },
-                                 { label : rMngr.getString('p2_main','main.clear_gps') }
-                               ];
-         // Iterate all view instances and inject new dataProvider
-         for each (var inst:potlatch2 in sri.targetInstances) {
-             if (inst == null) continue;
-             inst.gpsButton.dataProvider = options;
-         }
-    }
+                                  { label : rMngr.getString('p2_main','main.gps_data') },
+                                  { label : rMngr.getString('p2_main','main.my_tracks') },
+                                  { label : rMngr.getString('p2_main','main.clear_gps') }
+                                ];
+
+          // Iterate all view instances and inject new dataProvider
+          for each (var inst:potlatch2 in sri.targetInstances) {
+              if (inst == null) continue;
+              inst.gpsButton.dataProvider = options;
+          }
+      }
     ]]>
-  </mx:Script>      
+  </mx:Script>
 
   <commandFactory>
     <factory:ClassFactory generator="{ExternalLocaleCommand}">
@@ -60,9 +61,10 @@
     <ResourceSetter property="welcome.label" key="help.welcome" />
     <ResourceSetter property="whyOpenStreetMap.htmlText" key="help.whyOpenstreetmap" />
     <ResourceSetter property="activeMembers.htmlText" key="help.activeMembers" />
-    <ResourceSetter property="newMembersText.htmlText" key="help.newMembers" />   
-    <ResourceSetter property="introText.htmlText" key="help.introText" parameters="that"/> <!-- wanna call loaderInfo.parameters["site_name"] or getIntroText() -->
-    <ResourceSetter property="Introduction.label" key="help.introduction" />
+    <ResourceSetter property="newMembersText.htmlText" key="help.newMembers" />
+    <!-- wanna call loaderInfo.parameters["site_name"] or getIntroText() -->
+    <!-- <ResourceSetter property="introText.htmlText" key="help.introText" parameters="that"/> -->
+    <ResourceSetter property="introduction.label" key="help.introduction" />
     <ResourceSetter property="Controls.label" key="help.controls" />
     <ResourceSetter property="interfaceControls.label" key="help.interfaceControls"/>
     <ResourceSetter property="background.label" key="help.background"/>
@@ -74,10 +76,10 @@
     <ResourceSetter property="undoRedo.label" key="help.undoRedo" />
     <ResourceSetter property="madeMistake.htmlText" key="help.madeMistake" />
     <ResourceSetter property="help.label" key="help.help" />
-    <ResourceSetter property="guideInfomation.htmlText" key="help.guideInfomation" /> 
-    <ResourceSetter property="save.label" key="help.save" />  
+    <ResourceSetter property="guideInfomation.htmlText" key="help.guideInfomation" />
+    <ResourceSetter property="save.label" key="help.save" />
  <!--   <ResourceSetter property="saveText.htmlText" key="help.saveText" />    -->
-    <ResourceSetter property="addingFeatures.label" key="help.addingFeatures" />  
+    <ResourceSetter property="addingFeatures.label" key="help.addingFeatures" />
     <ResourceSetter property="addingFeaturesText.htmlText" key="help.addingFeaturesText" />
     <ResourceSetter property="editBeg.label" key="help.editBeg" />
     <ResourceSetter property="editingFeatures.label" key="help.editingFeatures" />
@@ -107,7 +109,7 @@
     <ResourceSetter property="clearGps.label" key="main.clear_gps" />
     -->
   </ResourceInjector>
-  
+
   <ResourceInjector bundleName="p2_main" target="{OAuthPanel}">
     <ResourceSetter property="gotLinkBox.text" key="oauth.gotLinkBox" />
     <ResourceSetter property="authorized.text" key="oauth.authorized" />

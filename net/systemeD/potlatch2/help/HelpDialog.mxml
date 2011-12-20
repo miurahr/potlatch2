@@ -12,8 +12,10 @@
     import mx.events.CloseEvent;
     import mx.core.Application;
     import mx.core.FlexGlobals;
+    import net.systemeD.halcyon.Globals;
 
 	[Bindable] private var application:Object = FlexGlobals.topLevelApplication;
+	[Bindable] private var locale:String = Globals.vars.locale;
 
     /** Pops up a multi-tabbed help window in the middle of the screen, then remembers that the user has seen it. */
     public function init():void {
@@ -56,9 +58,9 @@
     private function getIntroText():String {
         var site_name:String = loaderInfo.parameters["site_name"];
         if (site_name) {
-           return "<p><b>Potlatch2</b> is an OpenStreetMap (OSM) editor that allows you to make edits directly through the "+site_name+" website.</p>";
-         }
-        return  "<p><b>Potlatch2</b> is an OpenStreetMap (OSM) editor that allows you to make edits directly through this website.</p>";
+          return "<p><b>Potlatch2</b> is an OpenStreetMap (OSM) editor that allows you to make edits directly through the " + site_name + " website.</p>";
+        }
+        return "<p><b>Potlatch2</b> is an OpenStreetMap (OSM) editor that allows you to make edits directly through this website.</p>";
     }
 
     private function getSaveText():String {
@@ -139,13 +141,7 @@
       <mx:Grid width="100%"><!-- prepare for a column of icons, at some point -->
         <mx:GridRow width="100%">
           <mx:GridItem width="100%">
-            <mx:Text condenseWhite="true" width="100%" id="introText">
-            <mx:htmlText>
-                <![CDATA[
-                <p><b>Potlatch2</b> is an OpenStreetMap (OSM) editor that allows you to make edits directly through this website.</p>
-                ]]>
-             </mx:htmlText>
-             </mx:Text>
+            <mx:Text condenseWhite="true" width="100%" htmlText="{getIntroText()}" />
           </mx:GridItem>
         </mx:GridRow>
         <mx:GridRow width="100%">
@@ -189,7 +185,7 @@
       </mx:Grid>
     </mx:VBox>
 
-    <mx:VBox id="Introduction" label="Introduction" width="100%" height="100%" hide="introvideo.stopPlaying()" removedFromStage="introvideo.stopPlaying()">
+    <mx:VBox id="introduction" label="Introduction" width="100%" height="100%" hide="introvideo.stopPlaying()" removedFromStage="introvideo.stopPlaying()">
 		<help:VideoPlayer width="640" height="369" id="introvideo"
 			file="help/introduction.mp4" 
 			previewImage="help/introduction.jpg" />
@@ -366,7 +362,10 @@
   </mx:TabNavigator>
 
   <mx:ControlBar>
-    <mx:Label text="Version: {application.version} Build: {application.build_number}" />
+    <mx:VBox>
+      <mx:Label text="Version: {application.version} Build: {application.build_number}" />
+      <mx:Label text="Locale: {locale}" />
+    </mx:VBox>
     <mx:Spacer width="100%"/>
     <mx:Button label="Ok" click="PopUpManager.removePopUp(this);" styleName="titleWindowButton" />
   </mx:ControlBar>

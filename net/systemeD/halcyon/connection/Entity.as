@@ -128,6 +128,14 @@ package net.systemeD.halcyon.connection {
             return tags[key];
         }
 
+		/** Retrieve a key matching a regex. */
+		public function getTagByRegex(regex:RegExp):String {
+			for (var k:String in tags) {
+				if (k.match(regex)) return tags[k];
+			}
+			return null;
+		}
+
         /** @return true if there exists key=value */
         public function tagIs(key:String,value:String):Boolean {
             if (!tags[key]) { return false; }
@@ -146,7 +154,7 @@ package net.systemeD.halcyon.connection {
 
         /** Change oldKey=[value] to newKey=[value], with optional undoability.
          * @param oldKey Name of key to rename
-         * @parame newKey New name of key
+         * @param newKey New name of key
          * @param performAction Single-argument function to pass a SetTagKeyAction to.
          * @example renameTag("building", "amenity", MainUndoStack.getGlobalStack().addAction);
          */

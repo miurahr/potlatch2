@@ -66,7 +66,10 @@
       <arg line="-source-path ."/>
       <arg line="-doc-sources net/systemeD/"/>
       <arg line="-external-library-path=lib/"/>
-      <arg line="-target-player 10.0.0"/>
+      <arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/"/>
+      <arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/player/10.2/"/>
+      <arg line="-lenient"/>
+      <arg line="-target-player 10.2.0"/>
       <arg line="-exclude-classes ${org_classes} ${it_classes} ${hxasm_classes} ${com_classes}"/>
       <arg line="-output resources/docs/"/>
       <arg line="-window-title 'Halcyon and Potlatch2 Developer documentation'" />
@@ -279,11 +282,11 @@
             } else {
                project.setUserProperty("locales.list", project.getProperty("localename"));
             }
-  ]]></script>
+        ]]></script>
       </sequential>
     </ac:for>
   </target>
-  
+
   <target name="buildLocales" depends="makeLocalesList">
     <echo>Building Localization .swf's</echo>
     <ac:for list="${locales.list}" keepgoing="true" param="localename">
@@ -298,7 +301,7 @@
     <ac:for list="${locales.list}" keepgoing="true" param="localename">
       <sequential>
         <deployLocale locale="@{localename}" />
-      </sequential>  
+      </sequential>
     </ac:for>
   </target>
 
