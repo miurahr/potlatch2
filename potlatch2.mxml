@@ -83,7 +83,7 @@
         <mx:TextArea id="dataWorking" text="" right="5" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="18"
             enabled="false" borderThickness="0"
             showEffect="{wipeIn}" hideEffect="{wipeOut}"/>
-        <mx:TextArea id="coordsbox" left="25" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="30"
+        <mx:TextArea id="coordsbox" left="25" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="33"
             width="57" enabled="false" borderThickness="0" visible="false"/>
 
     </mx:Canvas>
@@ -103,7 +103,7 @@
 		import net.systemeD.potlatch2.utils.*;
         import net.systemeD.potlatch2.mygpx.*;
 		import net.systemeD.controls.FloatingAlert;
-		import net.systemeD.potlatch2.Preloader;
+		import net.systemeD.controls.Spinner;
 		import mx.managers.PopUpManager;
 		import flash.system.Security;
 		import flash.net.*;
@@ -132,6 +132,7 @@
 
 		private var savecount:uint=0;
 		private var loadcount:uint=0;
+		private var spinner:Spinner;
 		private var saveLabel:String='Save';
 		private var saveTimer:Timer;
 
@@ -230,6 +231,12 @@
             // Auto-load vector backgrounds from config
             theMap.addEventListener(MapEvent.INITIALISED, function(e:Event):void { VectorBackgrounds.instance().init(theMap); });
 
+			// Add loading 'spinner' indicator
+			spinner=new Spinner();
+			_root.addChild(spinner);
+			spinner.x=dataWorking.x-20;
+			spinner.y=dataWorking.y+dataWorking.height/2;
+
 			// Set start position of map
 			// ** FIXME: if lat/lon/zoom aren't supplied, we need to keep the map in a non-loading state 
 			//           until the user has decided where to start editing (e.g. when the first GPX loads)
@@ -257,7 +264,7 @@
 			Globals.vars.map_area.addEventListener(MouseEvent.MOUSE_DOWN, theMap.mouseDownHandler);
 
 			// initialise imagery
-			theMap.tileset.blocks=[new RegExp("google","i")];	// hard-coded block on Google tiles
+			theMap.tileset.blocks=[/google\./i];	// hard-coded block on Google tiles
 			theMap.tileset.setDimming(params['background_dim']    ==null ? true  : params['background_dim']);
 			theMap.tileset.setSharpen(params['background_sharpen']==null ? false : params['background_sharpen']);
 			Imagery.instance().init(theMap, overlay, yahoo);
@@ -347,12 +354,10 @@
 		
 		public function onMapError(mapEvent:MapEvent):void {
 			var buttons:uint=0;
-			if (mapEvent.params.no) { trace("no is set"); }
 			if (mapEvent.params.yes             ) buttons|=mx.controls.Alert.YES;
 			if (mapEvent.params.no              ) buttons|=mx.controls.Alert.NO;
 			if (mapEvent.params.cancel          ) buttons|=mx.controls.Alert.CANCEL;
 			if (mapEvent.params.ok || buttons==0) buttons|=mx.controls.Alert.OK;
-			trace("showing alert with "+buttons);
 			Alert.show(mapEvent.params.message, 'Error', buttons, null, function(closeEvent:CloseEvent):void { 
 				switch (closeEvent.detail) {
 					case mx.controls.Alert.CANCEL:	mapEvent.params.cancel(); break; //fixme? this gets called if user presses escape, even if there's no cancel button.
@@ -438,11 +443,18 @@
             updateDataWorking();
         }
 		private function updateDataWorking():void {
-			if (loadcount>0 && savecount>0) { dataWorking.text="Loading/saving..."; }
-			else if (loadcount>0)           { dataWorking.text="Loading data..."; }
-			else if (savecount>0)           { dataWorking.text="Saving data..."; }
-			else                            { dataWorking.text=""; }
-			dataWorking.visible=(dataWorking.text!="");
+			var t:String;
+			if (loadcount>0 && savecount>0) { t="Loading/saving#..."; }
+			else if (loadcount>0)           { t="Loading data#..."; }
+			else if (savecount>0)           { t="Saving data..."; }
+			else                            { t=""; }
+			dataWorking.text=t.replace("#",(loadcount>1) ? (" ("+loadcount+")") : "");
+
+			var previousState:Boolean=dataWorking.visible;
+			var newState:Boolean=(dataWorking.text!="");
+			if (!previousState && newState) spinner.start();
+			if (previousState && !newState) spinner.stop();
+			dataWorking.visible=newState;
 		}
         private function onDataDirty(event:Event):void {
 			saveButton.enabled=true;

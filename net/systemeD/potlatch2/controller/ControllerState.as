@@ -75,6 +75,7 @@ package net.systemeD.potlatch2.controller {
 		protected function sharedKeyboardEvents(event:KeyboardEvent):ControllerState {
 			var editableLayer:MapPaint=controller.map.editableLayer;								// shorthand for this method
 			switch (event.keyCode) {
+				case 48:	removeTags(); break;													// 0 - remove all tags
 				case 66:	setSourceTag(); break;													// B - set source tag for current object
 				case 67:	editableLayer.connection.closeChangeset(); break;						// C - close changeset
 				case 68:	editableLayer.alpha=1.3-editableLayer.alpha; return null;				// D - dim
@@ -110,12 +111,13 @@ package net.systemeD.potlatch2.controller {
 			if ( paint && paint.isBackground ) {
 				if (event.type == MouseEvent.MOUSE_DOWN && ((event.shiftKey && event.ctrlKey) || event.altKey) ) {
 					// alt-click to pull data out of vector background layer
-					// first, create a list of the alt-clicked item, plus anything else already selected (assuming it's in the same layer!)
+					// extend the current selection (alt-ctrl) or create a new one (alt)?
+					var newSelection:Array=(event.altKey && event.ctrlKey) ? _selection : [];
+					// create a list of the alt-clicked item, plus anything else already selected (assuming it's in the same layer!)
 					var itemsToPullThrough:Array=[]
 					if (_selection.length && firstSelected.connection==entity.connection) itemsToPullThrough=_selection.slice();
 					if (itemsToPullThrough.indexOf(entity)==-1) itemsToPullThrough.push(entity);
 					// make sure they're unhighlighted, and pull them through
-					var newSelection:Array=[]
 					for each (var entity:Entity in itemsToPullThrough) {
 						paint.setHighlight(entity, { hover:false, selected: false });
 						if (entity is Way) paint.setHighlightOnNodes(Way(entity), { selectedway: false });
@@ -199,6 +201,20 @@ package net.systemeD.potlatch2.controller {
 			object.resume();
 
 
+		}
+		
+		/** Remove all tags from current selection. */
+		protected function removeTags():void {
+			if (selectCount==0) return;
+			var undo:CompositeUndoableAction = new CompositeUndoableAction("Remove tags");
+			for each (var item:Entity in _selection) {
+				item.suspend();
+				var tags:Array=item.getTagArray();
+				for each (var tag:Tag in tags) item.setTag(tag.key,null,undo.push);
+			}
+			MainUndoStack.getGlobalStack().addAction(undo);
+			controller.updateSelectionUI();
+			for each (item in _selection) item.resume();
 		}
 
 		/** Create an action to add "source=*" tag to current entity based on background imagery. This is a convenient shorthand for users. */
