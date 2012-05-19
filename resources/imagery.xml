@@ -95,12 +95,12 @@
 	</set>
 	<set minlat="24.2" minlon="-125.8" maxlat="49.5" maxlon="-62.3">
 		<name>National Agriculture Imagery Program</name>
-		<url>http://cube.telascience.org/tilecache/tilecache.py/1.0.0/NAIP_ALL/$z/$x/$y.png</url>
+		<url>http://cube.telascience.org/tilecache/tilecache.py/NAIP_ALL/$z/$x/$y.png</url>
 		<sourcetag>NAIP</sourcetag>
 	</set>
 	<set minlat="55.3" minlon="-168.5" maxlat="71.5" maxlon="-140">
 		<name>National Agriculture Imagery Program</name>
-		<url>http://cube.telascience.org/tilecache/tilecache.py/1.0.0/NAIP_ALL/$z/$x/$y.png</url>
+		<url>http://cube.telascience.org/tilecache/tilecache.py/NAIP_ALL/$z/$x/$y.png</url>
 		<sourcetag>NAIP</sourcetag>
 	</set>
 	<set minlat='51.32' minlon='-10.71' maxlat='55.46' maxlon='-5.37'>
@@ -135,5 +135,10 @@
 		<name>Belarus - Kosmosnimki.ru SPOT4 Satellite</name>
 		<url>http://irs.gis-lab.info/?layers=spot&request=GetTile&z=$z&x=$x&y=$y</url>
 		<sourcetag>Kosmosnimki.ru SPOT4</sourcetag>
+	</set>
+	<set minlon="96" minlat="-44" maxlon="168" maxlat="-9">
+		<name>Australia - Geographic Reference Image</name>
+		<url>http://agri.openstreetmap.org/$z/$x/$y.png</url>
+		<sourcetag>AGRI</sourcetag>
 	</set>
 </imagery>

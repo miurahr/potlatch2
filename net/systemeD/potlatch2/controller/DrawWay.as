@@ -178,7 +178,9 @@ package net.systemeD.potlatch2.controller {
 				case Keyboard.BACKSPACE:	
 				case 189: /* minus */       return backspaceNode(MainUndoStack.getGlobalStack().addAction);
 				case 79: /* O */			return replaceNode();
-				case 82: /* R */            repeatTags(firstSelected); return this;
+				case 82: /* R */			if (!event.shiftKey) { repeatTags(firstSelected); }
+											else { repeatRelations(firstSelected); }
+											return this;
 				case 70: /* F */            followWay(); return this;
 			}
 			var cs:ControllerState = sharedKeyboardEvents(event);
@@ -201,10 +203,7 @@ package net.systemeD.potlatch2.controller {
 		protected function keyExitDrawing():ControllerState {
 			var cs:ControllerState=stopDrawing();
 			if (selectedWay.length==1) { 
-				if (MainUndoStack.getGlobalStack().undoIfAction(BeginWayAction)) { 
-					return new NoSelection();
-				}
-				return deleteWay();
+				return new NoSelection();
 			}
 			return cs;
 		}
@@ -344,6 +343,10 @@ package net.systemeD.potlatch2.controller {
 			controller.setCursor("pen");
 		}
 		override public function exitState(newState:ControllerState):void {
+			if (selectedWay.length==1 && !MainUndoStack.getGlobalStack().undoIfAction(BeginWayAction)) { 
+				selectedWay.remove(MainUndoStack.getGlobalStack().addAction);
+			}
+
             Way(firstSelected).removeEventListener(Connection.WAY_NODE_REMOVED, fixElastic);
             Way(firstSelected).removeEventListener(Connection.WAY_NODE_ADDED, fixElastic);
 

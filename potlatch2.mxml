@@ -32,7 +32,7 @@
         <mx:WipeRight id="wipeIn" duration="250"/>
     </fx:Declarations>
 
-    <mx:ApplicationControlBar id="controlbar" dock="true">
+    <mx:ApplicationControlBar id="controlbar" dock="true" tabChildren="false" >
         <mx:Button label="Save" icon="@Embed('embedded/upload.svg')" disabledIcon="@Embed('embedded/upload_disabled.svg')" styleName="appBarButton"
 			click="SaveManager.saveChanges(theMap.editableLayer.connection);" id="saveButton" enabled="false"/>
         <mx:Button id="helpButton" label="Help" click="new HelpDialog().init();" styleName="appBarButton" />
@@ -48,7 +48,7 @@
             creationComplete="bgButton.popUp = new BackgroundSelector();"/>
         <mx:PopUpButton id="styleButton" label="Map Style" openAlways="true" styleName="appBarButton"
             creationComplete="styleButton.popUp = new StyleSelector();"/>
-		<mx:PopUpMenuButton id="gpsButton" label="GPS Data" styleName="appBarButton"
+		<mx:PopUpMenuButton id="gpsButton" label="GPS" styleName="appBarButton"
 		    itemClick="if (event.index==0) { trackLoader.load(); } 
 		          else if (event.index==1) { new MyGpxDialog().init(); } 
 		                              else { mx.controls.Menu(gpsButton.popUp).selectedIndex=0; 
@@ -99,9 +99,8 @@
 		import net.systemeD.potlatch2.collections.*;
 		import net.systemeD.potlatch2.controller.*;
 		import net.systemeD.potlatch2.help.*;
-		import net.systemeD.potlatch2.options.*;
+		import net.systemeD.potlatch2.dialogs.*;
 		import net.systemeD.potlatch2.utils.*;
-        import net.systemeD.potlatch2.mygpx.*;
 		import net.systemeD.controls.FloatingAlert;
 		import net.systemeD.controls.Spinner;
 		import mx.managers.PopUpManager;
@@ -124,7 +123,6 @@
 
         public var theMap:Map;
         public var theController:EditController;
-		public var yahoo:Yahoo;
 		public var trackLoader:TrackLoader;
 		public var toolbox:Toolbox;
         public var bugLoader:BugLoader;
@@ -141,10 +139,16 @@
 		private function startInit():void {
 			var loader:Loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, startApp);
-			loader.load(new URLRequest("FontLibrary.swf"));
+            if (loaderInfo.parameters['font_library']) {
+			    loader.load(new URLRequest(loaderInfo.parameters['font_library']));
+            } else {
+			    loader.load(new URLRequest("FontLibrary.swf"));
+            }
 
-            if (loaderInfo.parameters['locale']) {
+            if (loaderInfo.parameters['locale'] && loaderInfo.parameters['locale']!='en_US') {
+                // we don't bother with localisation if the user is en_US, as P2 is in English by default
                 Globals.vars.locale = loaderInfo.parameters['locale'];
+                Globals.vars.locale_paths = loaderInfo.parameters['locale_paths'];
                 dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, loaderInfo.parameters['locale']));
                 dispatchEvent(new LocaleEvent(LocaleEvent.LOAD_LOCALE, 'en_US')); // think en_US is default
                 resourceManager.localeChain = [loaderInfo.parameters['locale'], 'en_US'];
@@ -168,7 +172,7 @@
 			saveLabel=saveButton.label;
 
 			// populate sharedObject with loaderInfo parameters if supplied
-			var obj:SharedObject = SharedObject.getLocal("user_state");
+			var obj:SharedObject = SharedObject.getLocal("user_state","/");
 			var objChanged:Boolean = false;
 			if (loaderInfo.parameters['tileurl']) {
 				obj.setProperty('background_url',loaderInfo.parameters['tileurl']); 
@@ -195,17 +199,13 @@
 			// pass additional parameters to map
 			var params:Object={}; var k:String;
 			for (k in this.loaderInfo.parameters) params[k]=this.loaderInfo.parameters[k];
-			for (k in SharedObject.getLocal('user_state').data) params[k]=SharedObject.getLocal('user_state').data[k];
+			for (k in SharedObject.getLocal('user_state',"/").data) params[k]=SharedObject.getLocal('user_state',"/").data[k];
 
 			// Create map
 			theMap=new Map();
 			theMap.backdrop=b;
             theMap.updateSize(w,h);
 			theMap.addEventListener(MapEvent.SCALE, scaleHandler);
-
-			yahoo=new Yahoo(theMap);
-			yahoo.hide();
-			_root.addChild(yahoo);
 			_root.addChild(theMap);
 
 			// Initialise stylesheets
@@ -226,7 +226,7 @@
 			conn.addEventListener(AttentionEvent.ATTENTION, onAttention);
 			conn.addEventListener(AttentionEvent.ALERT, onAlert);
 			if (params['licence_status']) conn.statusFetcher=new StatusFetcher("http://wtfe.gryph.de/api/0.6/problems",conn);
-			theMap.addLayer(conn, Stylesheets.instance().selected, false, true);
+			theMap.addLayer(conn, Stylesheets.instance().selected.url, false, true);
 
             // Auto-load vector backgrounds from config
             theMap.addEventListener(MapEvent.INITIALISED, function(e:Event):void { VectorBackgrounds.instance().init(theMap); });
@@ -267,11 +267,13 @@
 			theMap.tileset.blocks=[/google\./i];	// hard-coded block on Google tiles
 			theMap.tileset.setDimming(params['background_dim']    ==null ? true  : params['background_dim']);
 			theMap.tileset.setSharpen(params['background_sharpen']==null ? false : params['background_sharpen']);
-			Imagery.instance().init(theMap, overlay, yahoo);
-			Imagery.instance().addEventListener(MapEvent.BUMP, bumpHandler);
-			Imagery.instance().addEventListener(CollectionEvent.SELECT,
+			var imagery:Imagery = Imagery.instance();
+			imagery.init(theMap, overlay);
+			imagery.addEventListener(MapEvent.BUMP, bumpHandler);
+			imagery.addEventListener(CollectionEvent.SELECT,
 				function(e:CollectionEvent):void { theMap.tileset.init(e.data, e.data!=''); }
 			);
+			theMap.tileset.init(imagery.selected, imagery.selected != '');
 			
 			// keyboard event attached to stage
 			stage.addEventListener(KeyboardEvent.KEY_UP, theMap.keyUpHandler);
@@ -301,7 +303,7 @@
 			theController.addEventListener(AttentionEvent.ALERT, onAlert);
             
             // set the access token from saved cookie
-            var tokenObject:SharedObject = SharedObject.getLocal("access_token");
+            var tokenObject:SharedObject = SharedObject.getLocal("access_token","/");
             conn.setAccessToken(tokenObject.data["oauth_token"], tokenObject.data["oauth_token_secret"]);
 
             // Load any requested GPX track
@@ -320,13 +322,14 @@
                 var gpx_url:String = loaderInfo.parameters['gpx_url'];
 
                 var connection:Connection = new Connection(name, gpx_url, null, null);
-                var gpx:GpxImporter=new GpxImporter(connection, theMap, [gpx_url],
-                                                function(success:Boolean,message:String=null):void {
+                var gpx:GpxImporter=new GpxImporter(connection, theMap,
+                                                function(connection:Connection,options:Object,success:Boolean,message:String=null):void {
                                                     if (!success) return;
                                                     var paint:MapPaint = theMap.addLayer(connection, "stylesheets/gpx.css");
                                                     paint.updateEntityUIs(false, false);
                                                     dispatchEvent(new Event("layers_changed"));
                                                 }, false);
+				gpx.importFromRemoteFiles([gpx_url]);
 			}
 
 			// create GPS trackloader

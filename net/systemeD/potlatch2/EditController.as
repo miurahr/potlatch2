@@ -15,6 +15,7 @@ package net.systemeD.potlatch2 {
 	import flash.ui.Keyboard;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursorData;
+	import flash.system.Capabilities;
 	import flash.text.TextField;
     import mx.controls.TextArea;
 
@@ -29,8 +30,14 @@ package net.systemeD.potlatch2 {
         /** The current ControllerState */
         public var state:ControllerState;
         
+		/** Hash of when a key was pressed. A user can keyDown within a TextInput, press Enter (leaving
+		    the TextInput), and then keyup - resulting in the keypress being interpreted again. 
+		    We prevent this by tracking keyDowns within the TextInput and ignoring corresponding keyUps. */
 		private var keys:Object={};
-		public var clipboards:Object={};
+
+		public var spaceHeld:Boolean=false;
+		public var clipboards:Object={};          // one array of tags to repeat, per object type 
+		public var relationClipboards:Object={};  // one array of relations to repeat, per object type
 		public var cursorsEnabled:Boolean=true;
         private var maximised:Boolean=false;
         private var maximiseFunction:String;
@@ -68,11 +75,13 @@ package net.systemeD.potlatch2 {
                 map.addEventListener(MapEvent.MOVE, moveHandler);
             }
 
-			createBitmapCursor("pen"     ,new pen());
-			createBitmapCursor("pen_x"   ,new pen_x());
-			createBitmapCursor("pen_o"   ,new pen_o());
-			createBitmapCursor("pen_so"  ,new pen_so());
-			createBitmapCursor("pen_plus",new pen_plus());
+			if (supportsMouseCursors()) {
+				createBitmapCursor("pen"     ,new pen());
+				createBitmapCursor("pen_x"   ,new pen_x());
+				createBitmapCursor("pen_o"   ,new pen_o());
+				createBitmapCursor("pen_so"  ,new pen_so());
+				createBitmapCursor("pen_plus",new pen_plus());
+			}
         }
 
         public function setActive():void {
@@ -100,25 +109,25 @@ package net.systemeD.potlatch2 {
 		}
         
         private function keyDownHandler(event:KeyboardEvent):void {
-			if ((event.target is TextField) || (event.target is TextArea)) return;
-			keys[event.keyCode]=true;
+			if ((event.target is TextField) || (event.target is TextArea)) {
+				keys[event.keyCode]=new Date().getTime();
+				return;
+			}
+			delete keys[event.keyCode];
+			if (event.keyCode==Keyboard.SPACE) spaceHeld=true;
 		}
 
         private function keyUpHandler(event:KeyboardEvent):void {
-            if (!keys[event.keyCode]) return;
-            delete keys[event.keyCode];
-            if ((event.target is TextField) || (event.target is TextArea)) return;				// not meant for us
+			if ((event.target is TextField) || (event.target is TextArea)) return;
+			if (event.keyCode==Keyboard.SPACE) spaceHeld=false;
+			if (keys[event.keyCode] && new Date().getTime()-keys[event.keyCode]<300) return;
+			delete keys[event.keyCode];
 
 			if (FunctionKeyManager.instance().handleKeypress(event.keyCode)) { return; }
             
             if (event.keyCode == 77) { toggleSize(); } // 'M'
             var newState:ControllerState = state.processKeyboardEvent(event);
             setState(newState);            
-		}
-
-		/** Is the given key currently pressed? */
-		public function keyDown(key:Number):Boolean {
-			return Boolean(keys[key]);
 		}
 
         private function mapMouseEvent(event:MouseEvent):void {
@@ -166,7 +175,6 @@ package net.systemeD.potlatch2 {
             if ( state != null )
                 state.exitState(newState);
             newState.setController(this);
-            newState.setPreviousState(state);
             state = newState;
             state.enterState();
         }
@@ -188,7 +196,7 @@ package net.systemeD.potlatch2 {
 
 		/** Set a mouse pointer. */
 		public function setCursor(name:String=""):void {
-			if (name && cursorsEnabled) { Mouse.cursor=name; }
+			if (name && cursorsEnabled && supportsMouseCursors()) { Mouse.cursor=name; }
 			else { Mouse.cursor=flash.ui.MouseCursor.AUTO; }
 		}
 
@@ -199,6 +207,12 @@ package net.systemeD.potlatch2 {
 			cursorData.hotSpot = new Point(hotX,hotY);
 			cursorData.data = bitmapVector;
 			Mouse.registerCursor(name, cursorData);
+		}
+
+		private function supportsMouseCursors():Boolean {
+			var fpArray:Array=Capabilities.version.split(",");
+			var fpVersion:Number=Number(fpArray[0].split(" ")[1])+Number(fpArray[1])/10;
+			return (fpVersion>10.1);
 		}
 
         private function toggleSize():void {

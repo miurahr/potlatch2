@@ -430,6 +430,7 @@ package net.systemeD.halcyon {
 
 		private function everyFrame(event:Event):void {
 			if (tileset) { tileset.serviceQueue(); }
+			if (stage.focus && !stage.contains(stage.focus)) { stage.focus=stage; }
 		}
 
 		// ------------------------------------------------------------------------------------------
@@ -446,22 +447,6 @@ package net.systemeD.halcyon {
 				case Keyboard.RIGHT:	moveMap(-mapwidth/2,0); break;   // right cursor
 				case Keyboard.DOWN:	moveMap(0,-mapheight/2); break;      // down cursor
 			}
-		}
-
-		// ------------------------------------------------------------------------------------------
-		// Debugging
-		
-		public function clearDebug():void {
-			if (!Globals.vars.hasOwnProperty('debug')) return;
-			Globals.vars.debug.text='';
-		}
-			
-		public function addDebug(text:String):void {
-			trace(text);
-			if (!Globals.vars.hasOwnProperty('debug')) return;
-			if (!Globals.vars.debug.visible) return;
-			Globals.vars.debug.appendText(text+"\n");
-			Globals.vars.debug.scrollV=Globals.vars.debug.maxScrollV;
 		}
 
 	}

@@ -7,7 +7,7 @@
   <!-- Support for Locale ResourceBundle changes -->
   <mx:Script>
     <![CDATA[
-      import org.babelfx.commands.ExternalLocaleCommand;
+      import net.systemeD.potlatch2.CustomLocaleCommand;
       import org.babelfx.events.LocaleEvent;
       import mx.resources.ResourceManager;
       import mx.resources.IResourceManager;
@@ -22,7 +22,7 @@
       import net.systemeD.potlatch2.save.OAuthPanel;
       import net.systemeD.potlatch2.save.SaveDialog;
 
-      import net.systemeD.potlatch2.options.OptionsDialog;
+      import net.systemeD.potlatch2.dialogs.OptionsDialog;
 
       private function onLocaleChanged(event:Event):void {
           var rMngr : IResourceManager = ResourceManager.getInstance();
@@ -32,6 +32,9 @@
                                   { label : rMngr.getString('p2_main','main.my_tracks') },
                                   { label : rMngr.getString('p2_main','main.clear_gps') }
                                 ];
+          // ** FIXME: If the locale is en_US, then the above rMngr.getString calls return null.
+          //           Conversely, with any locale, the actual Label of gpsButton is never
+          //           updated and keeps showing 'GPS'.
 
           // Iterate all view instances and inject new dataProvider
           for each (var inst:potlatch2 in sri.targetInstances) {
@@ -43,9 +46,9 @@
   </mx:Script>
 
   <commandFactory>
-    <factory:ClassFactory generator="{ExternalLocaleCommand}">
+    <factory:ClassFactory generator="{CustomLocaleCommand}">
       <factory:properties>
-        <mx:Object externalPath="locales/\{0\}.swf"/>
+        <mx:Object defaultExternalPath="locales/\{0\}.swf"/>
       </factory:properties>
     </factory:ClassFactory>
   </commandFactory>

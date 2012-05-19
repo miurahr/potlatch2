@@ -6,19 +6,19 @@ package net.systemeD.halcyon.connection {
         private var members:Array;
 		public static var entity_type:String = 'relation';
 
-        public function Relation(connection:Connection, id:Number, version:uint, tags:Object, loaded:Boolean, members:Array, uid:Number = NaN, timestamp:String = null) {
-            super(connection, id, version, tags, loaded, uid, timestamp);
+        public function Relation(connection:Connection, id:Number, version:uint, tags:Object, loaded:Boolean, members:Array, uid:Number = NaN, timestamp:String = null, user:String = null) {
+            super(connection, id, version, tags, loaded, uid, timestamp, user);
             this.members = members;
 			for each (var member:RelationMember in members)
 			    member.entity.addParent(this);
         }
 
-        public function update(version:uint, tags:Object, loaded:Boolean, parentsLoaded:Boolean, members:Array, uid:Number = NaN, timestamp:String = null):void {
+        public function update(version:uint, tags:Object, loaded:Boolean, parentsLoaded:Boolean, members:Array, uid:Number = NaN, timestamp:String = null, user:String = null):void {
 			var member:RelationMember;
 			for each (member in this.members)
 			    member.entity.removeParent(this);
 
-			updateEntityProperties(version,tags,loaded,parentsLoaded,uid,timestamp);
+			updateEntityProperties(version,tags,loaded,parentsLoaded,uid,timestamp,user);
 			this.members=members;
 			for each (member in members)
 			    member.entity.addParent(this);
@@ -83,9 +83,10 @@ package net.systemeD.halcyon.connection {
 			return a;
 		}
 
+		/** Is there an entity member in this specific role? */
 		public function hasMemberInRole(entity:Entity,role:String):Boolean {
             for (var index:uint = 0; index < members.length; index++) {
-				if (members[index].role==role && members[index].entity == entity) { return true; }
+				if (members[index].entity == entity && members[index].role==role) { return true; }
 			}
 			return false;
 		}
@@ -149,6 +150,11 @@ package net.systemeD.halcyon.connection {
 				if ((firstName+lastName)!='') desc+=" "+firstName+"-"+lastName;
 			}
 			return desc;
+		}
+		
+		public function getRelationType():String {
+			var relTags:Object = getTagsHash();
+			return relTags["type"] ? relTags["type"] : getType();
 		}
 		
 		private function getSignificantName(entity:Entity):String {

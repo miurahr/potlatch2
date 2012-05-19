@@ -6,7 +6,7 @@ package net.systemeD.potlatch2.collections {
 	import net.systemeD.halcyon.Map;
 	import net.systemeD.halcyon.MapPaint;
 	import net.systemeD.halcyon.connection.Connection;
-	import net.systemeD.halcyon.DebugURLRequest;
+	import net.systemeD.halcyon.FileBank;
 	import net.systemeD.potlatch2.utils.*;
 		
 	public class VectorBackgrounds extends EventDispatcher {
@@ -19,14 +19,11 @@ package net.systemeD.potlatch2.collections {
 
 		public function init(map:Map):void {
 			_map = map;
-			var request:DebugURLRequest = new DebugURLRequest("vectors.xml");
-			var loader:URLLoader = new URLLoader();
-			loader.addEventListener(Event.COMPLETE, onConfigLoad);
-			loader.load(request.request);
+            FileBank.getInstance().addFromFile("vectors.xml", onConfigLoad);
 		}
 
-		public function onConfigLoad(e:Event):void {
-			var xml:XML = XML(e.target.data);
+		private function onConfigLoad(fileBank:FileBank, filename:String):void {
+			var xml:XML = new XML(fileBank.getAsString(filename));
 
 			// reconstitute results as Array, as we can't run .forEach over an XMLList
 			var sets:Array = [];
@@ -75,13 +72,14 @@ package net.systemeD.potlatch2.collections {
 										var gpx_url:String = String(set.url);
 
 										var connection:Connection = new Connection(name, gpx_url, null, null);
-										var gpx:GpxImporter=new GpxImporter(connection, _map, [gpx_url],
-										function(success:Boolean,message:String=null):void {
+										var gpx:GpxImporter=new GpxImporter(connection, _map, 
+										function(connection:Connection,options:Object,success:Boolean,message:String=null):void {
 											if (!success) return;
 											var paint:MapPaint = _map.addLayer(connection, "stylesheets/gpx.css");
 											paint.updateEntityUIs(false, false);
 											dispatchEvent(new Event("layers_changed"));
 										}, false);
+										gpx.importFromRemoteFiles([gpx_url]);
 									} else {
 									trace("VectorBackgrounds: configured but not loaded isn't supported yet");
 									}

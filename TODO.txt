@@ -76,8 +76,12 @@
   and edit *.properties file. That's all. Compiler will automatically find your contributions.
 * Automate updates of message properties and LocalizationMap file refrected from source,  as same function as msgmerge as in gettext utility.
 
+== history ==
+* Think about what happens if a node, which used to be part of a way and isn't any more, changes. Does that put a fake "version" in?
+
 == other ==
 * Simplify.as shouldn't add an action to the global undo stack, since it's called from e.g. importing into other layers
+
 
 Requested enhancements
 ----------------------
