@@ -63,6 +63,10 @@ s|FormItem s|Label#labelDisplay {
     textAlign: right;
 }
 
+s|DropDownList s|Label#labelDisplay {
+    textAlign: left;
+}
+
 s|FormHeading {
 	fontSize: 12;
 }
@@ -78,6 +82,7 @@ mx|Application {
 	themeColor: #0000ff;
 	borderStyle: none;
 	fontFamily: Arial;
+	fontLookup: device;
 }
 
 mx|HDividedBox {
@@ -282,6 +287,12 @@ s|FormItem {
 	closedIcon: Embed(source="../embedded/CollapsiblePanelAssets.swf", symbol="CollapseButtonOver");
 }
 
+/* Tag tooltips */
+
+.errorTip {
+    borderColor: #2929CE;
+}
+
 /* Toolbox */
 
 .theToolBox {
@@ -312,6 +323,13 @@ s|FormItem {
 	tabOffset: 10px;
 }
 
+.contextualHelp {
+	backgroundColor: #71A2FA;
+	color: white;
+	borderThickness: 0;
+	fontSize: 12pt;
+	textAlign: center;
+}
 
 /* Don't appear to be used */
 

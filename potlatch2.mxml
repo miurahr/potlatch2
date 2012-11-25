@@ -44,11 +44,11 @@
             enabled="{MainUndoStack.getGlobalStack().canRedo()}"
             toolTip="{MainUndoStack.getGlobalStack().getRedoDescription() ? 'Redo '+MainUndoStack.getGlobalStack().getRedoDescription() : 'Redo last action'}" />
         <mx:Spacer width="100%"/>
-        <mx:PopUpButton id="bgButton" label="Background" openAlways="true" styleName="appBarButton"
+        <mx:PopUpButton id="bgButton" label="Background" openAlways="true" styleName="appBarButton" open="disableMapMouse();" close="enableMapMouse();" 
             creationComplete="bgButton.popUp = new BackgroundSelector();"/>
-        <mx:PopUpButton id="styleButton" label="Map Style" openAlways="true" styleName="appBarButton"
+        <mx:PopUpButton id="styleButton" label="Map Style" openAlways="true" styleName="appBarButton" open="disableMapMouse();" close="enableMapMouse();" 
             creationComplete="styleButton.popUp = new StyleSelector();"/>
-		<mx:PopUpMenuButton id="gpsButton" label="GPS" styleName="appBarButton"
+		<mx:PopUpMenuButton id="gpsButton" label="GPS" styleName="appBarButton" open="disableMapMouse();" close="enableMapMouse();" 
 		    itemClick="if (event.index==0) { trackLoader.load(); } 
 		          else if (event.index==1) { new MyGpxDialog().init(); } 
 		                              else { mx.controls.Menu(gpsButton.popUp).selectedIndex=0; 
@@ -70,23 +70,26 @@
 	  <!-- Tag viewer -->
 	  <potlatch2:TagViewer width="25%" height="100%" id="tagViewer"/>
 
-      <mx:Canvas width="75%" height="100%">
-        <mx:Canvas id="map_area" resize="onResizeMap()"
-            top="0" left="0" width="100%" height="100%" dragEnter="dragEnterHandler(event);" dragDrop="dragDropHandler(event);">
-        </mx:Canvas>
-        <mx:Image source="@Embed('embedded/zoomIn.svg')" left="5" top="5" click="theMap.zoomIn();"
-            rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="{'Zoom in - currently z'+getScale()}" />
-        <mx:Image source="@Embed('embedded/zoomOut.svg')" left="5" top="22" click="theMap.zoomOut();"
-            rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="{'Zoom out - currently z'+getScale()}" />
-        <mx:Image source="@Embed('embedded/search.svg')" left="5" top="42" click="new FindDialog().init();"
-            rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="Find place" />
-        <mx:TextArea id="dataWorking" text="" right="5" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="18"
-            enabled="false" borderThickness="0"
-            showEffect="{wipeIn}" hideEffect="{wipeOut}"/>
-        <mx:TextArea id="coordsbox" left="25" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="33"
-            width="57" enabled="false" borderThickness="0" visible="false"/>
+      <mx:VBox width="75%" height="100%" verticalGap="0" id="rhContent" >
+          <mx:Canvas width="100%" height="100%">
+            <mx:Canvas id="map_area" resize="onResizeMap()"
+                top="0" left="0" width="100%" height="100%" dragEnter="dragEnterHandler(event);" dragDrop="dragDropHandler(event);">
+            </mx:Canvas>
+            <mx:Image source="@Embed('embedded/zoomIn.svg')" left="5" top="5" click="theMap.zoomIn();"
+                rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="{'Zoom in - currently z'+getScale()}" />
+            <mx:Image source="@Embed('embedded/zoomOut.svg')" left="5" top="22" click="theMap.zoomOut();"
+                rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="{'Zoom out - currently z'+getScale()}" />
+            <mx:Image source="@Embed('embedded/search.svg')" left="5" top="42" click="new FindDialog().init();"
+                rollOverEffect="glowImage" rollOutEffect="unglowImage" toolTip="Find place" />
+            <mx:TextArea id="dataWorking" text="" right="5" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="18"
+                enabled="false" borderThickness="0"
+                showEffect="{wipeIn}" hideEffect="{wipeOut}"/>
+            <mx:TextArea id="coordsbox" left="25" top="5" disabledColor="black" backgroundDisabledColor="0xFFFFEA" height="33"
+                width="57" enabled="false" borderThickness="0" visible="false"/>
 
-    </mx:Canvas>
+        </mx:Canvas>
+        <potlatch2:ContextualHelp width="100%" height="30" id="contextHelp" />
+    </mx:VBox>
 
     </mx:HDividedBox>
 
@@ -133,6 +136,8 @@
 		private var spinner:Spinner;
 		private var saveLabel:String='Save';
 		private var saveTimer:Timer;
+		private var mouseTimer:Timer;
+		private var resizeTimer:Timer;
 
         include "version.as";
 
@@ -184,7 +189,13 @@
 				obj.setProperty('stylesheet_name','Custom');
 				objChanged=true; 
 			}
-			if (objChanged) { obj.flush(); }
+			if (objChanged) { try { obj.flush(); } catch (e:Error) {} }
+
+			// hide contextual help if user preference
+			if (obj.data.hasOwnProperty('hide_context_help') && obj.data['hide_context_help']) {
+				contextHelp.visible = false;
+				contextHelp.height  = 0;
+			}
 
 			// map backdrop object
             var w:uint = map_area.width;
@@ -225,7 +236,6 @@
 			conn.addEventListener(MapEvent.ERROR, onMapError);
 			conn.addEventListener(AttentionEvent.ATTENTION, onAttention);
 			conn.addEventListener(AttentionEvent.ALERT, onAlert);
-			if (params['licence_status']) conn.statusFetcher=new StatusFetcher("http://wtfe.gryph.de/api/0.6/problems",conn);
 			theMap.addLayer(conn, Stylesheets.instance().selected.url, false, true);
 
             // Auto-load vector backgrounds from config
@@ -284,23 +294,16 @@
 			// position toolbox
 			toolbox=Toolbox(PopUpManager.createPopUp(this,Toolbox,false));
 			toolbox.init(theController);
-			toolbox.x=stage.stageWidth-toolbox.width-5;
-			toolbox.y=stage.stageHeight-toolbox.height-5;
-
-			// add debug field
-			var t:TextField=new TextField();
-			t.width=500; t.height=150; t.border=true;
-			t.multiline=true;
-			_root.addChild(t);
-			Globals.vars.debug=t;
-            t.visible = loaderInfo.parameters["show_debug"] == 'true';
-			Globals.vars.root=theMap;	// just for the addDebug function
+			toolbox.x=suggestToolboxX();
+			toolbox.y=suggestToolboxY();
+			Globals.vars.root=theMap;
 
 			// create controller
             theController = new EditController(theMap, tagViewer, toolbox);
             theController.setActive();
 			theController.addEventListener(AttentionEvent.ATTENTION, onAttention);
 			theController.addEventListener(AttentionEvent.ALERT, onAlert);
+			theController.addEventListener(EditController.CHANGED_STATE, onStateChanged);
             
             // set the access token from saved cookie
             var tokenObject:SharedObject = SharedObject.getLocal("access_token","/");
@@ -410,19 +413,63 @@
 			stage.addChild(alert);
 		}
 
+		/** ControllerState has changed, so update contextual help */
+		
+		public function onStateChanged(event:Event):void {
+			var helpId:String = theController.state.contextualHelpId();
+			contextHelp.selectedChild = contextHelp.hasOwnProperty("context"+helpId) ? contextHelp["context"+helpId] : contextHelp["contextNotFound"];
+		}
+
         public function onResizeMap():void {
-            if ( theMap != null )
-                theMap.updateSize(map_area.width, map_area.height);
+			if (!theMap) return;
+			theMap.updateSize(map_area.width, map_area.height);
 
 			if (toolbox) {
-				toolbox.x=Math.min(toolbox.x,stage.stageWidth-toolbox.width-5);
-				toolbox.y=Math.min(toolbox.y,stage.stageHeight-toolbox.height-5);
+				toolbox.x=Math.min(toolbox.x,suggestToolboxX());
+				toolbox.y=Math.min(toolbox.y,suggestToolboxY());
 			}
+
+			if (!resizeTimer) {
+				resizeTimer=new Timer(300);
+				resizeTimer.addEventListener(TimerEvent.TIMER, resizeMapEnd, false, 0, true);
+			}
+			resizeTimer.reset();
+			resizeTimer.start();
         }
+		private function resizeMapEnd(e:Event):void {
+			resizeTimer.stop();
+			theMap.download();
+		}
 		private function bumpHandler(e:MapEvent):void {
-			if (toolbox) {
-				toolbox.y=Math.min(toolbox.y,stage.stageHeight-toolbox.height-10-e.params.y);
+			if (toolbox) { 
+				toolbox.y=Math.min(toolbox.y,suggestToolboxY(e.params.y+5));
 			}
+		}
+		private function suggestToolboxX():int {
+			var rhCP:Point=rhContent.localToGlobal(new Point(0,0));
+			return rhCP.x + theMap.scrollRect.width - toolbox.width - 5;
+		}
+		private function suggestToolboxY(yOffset:int=0):int {
+			var rhCP:Point=rhContent.localToGlobal(new Point(0,0));	// stage co-ordinates of right-hand content area
+			return rhCP.y + theMap.scrollRect.height - toolbox.height - 5 - yOffset;
+		}
+
+		private function disableMapMouse():void {
+			map_area.mouseChildren=false;
+			map_area.mouseEnabled=false;
+		}
+
+		private function enableMapMouse():void {
+			mouseTimer=new Timer(300);
+			mouseTimer.addEventListener(TimerEvent.TIMER, doEnable, false, 0, true);
+			mouseTimer.start();
+		}
+		
+		private function doEnable(event:Event):void {
+			map_area.mouseChildren=true;
+			map_area.mouseEnabled=true;
+			mouseTimer.removeEventListener(TimerEvent.TIMER, doEnable);
+			mouseTimer=null;
 		}
 
         private function mouseoverHandler(e:MapEvent):void {

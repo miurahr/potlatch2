@@ -47,6 +47,11 @@ package net.systemeD.halcyon.connection {
 					fetchSet.add(new Box().fromBbox(minlon,minlat,maxlon,maxlat));
 				}
 
+				for each(var csData:XML in map.changeset) {
+					var cs:Changeset = new Changeset(this, csData.@id, parseTags(csData.tag) );
+					setChangeset(cs);
+				}
+
 				for each(var relData:XML in map.relation) {
 					id = Number(relData.@id);
 					version = uint(relData.@version);
@@ -171,14 +176,6 @@ package net.systemeD.halcyon.connection {
 			if (statusFetcher) statusFetcher.fetch(createdEntities); 
 		}
 		
-		protected function registerPOINodes():void {
-			for each (var nodeID:Number in getAllNodeIDs()) {
-				var node:Node = getNode(nodeID);
-				if (!node.hasParentWays)
-					registerPOI(node);
-			}
-		}
-
 		protected function parseTags(tagElements:XMLList):Object {
 			var tags:Object = {};
 			for each (var tagEl:XML in tagElements)
