@@ -1,7 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	See http://wiki.openstreetmap.org/wiki/Potlatch_2/Developer_Documentation/Map_Features for documentation.
-	Files can be included like this: <include file="map_features/roads.xml">
+Quick documentation:
+
+<category> the categories that features belong to. This includes both nodes (icons on left) and ways/areas (drop-down list that appears when a way/area is selected)
+  name: Shown in GUI
+  id: internal reference (a feature refers to this with category=xxx)
+
+<feature> a pre-defined group of tags that make up a feature
+  category: [ctext] corresponding to category id
+  icon
+    @image: path to .png file
+    @dnd: path to optional dnd-specific-override .png file
+    @background: colour spec
+    @foreground: colour spec
+    (general html goes here?) Variables substituted with ${ref}
+  help: [ctext] URL, shown as a linked ? icon. Should (?) usually be an OSM wiki page.
+  description: Not currently used?
+  line/point/area: any or all of these are allowed. Determines whether this feature is shown in the corresponding situations. None is equivalent to all three.
+  tag - one or more of these required, defines the tags that make up the feature.
+    @k - key
+    @v - value
+  input
+    @ref=xxx
+  inputSet
+    @ref=xxx
+</feature>
+
+<inputSet>: a reusable group of properties for a feature.
+  @id="internal id"
+  input...
+</inputSet>
+
+<input>
+  @type: choice/freetext/turn/checkbox/slider/route/speed/number - the different types of supported input dialogs.
+  @presence: always/onTagMatch/withCategory - Whether it always appears on the basic page, appears only when the tag is already set, or only ever show on the category page.
+  @category: which tab it appears on
+  @description: mouse-over text
+  @name: The text shown as the label of the property
+  @key: The actual OSM key (tag) that will be saved
+  @priority: highest/high/normal/low/lowest (default=>normal) - controls the order that different features show up in a panel.
+  match: for turn|route inputs, the tags to be considered on the relation as indicating a match.
+    @k: key
+    @v: value
+  icon: see above
+</input>
+
+<include
+  @file="map_features/roads.xml": external file to drop into place here. Include files behave exactly as if written out in full.
+/>
 -->
 
 <mapFeatures>
@@ -40,13 +86,21 @@
     <inputSet ref="simpleName" />
     <input type="freetext" presence="always" name="参照番号" key="ref" description="地物を参照する番号やコード" />
   </inputSet>
- 
+
+   <inputSet id="simpleBrand"> 
+     <input type="freetext" category="名称" presence="always" name="ブランド" key="brand" description="ブランド、i.e. Acme"/> 
+   </inputSet> 
+  
+   <inputSet id="simpleOperator"> 
+     <input type="freetext" category="名称" presence="always" name="運営会社" key="operator" description="運営会社, i.e. Acme Springfield Ltd"/> 
+   </inputSet> 
+
   <inputSet id="source">
-    <input type="freetext" category="詳細" presence="onTagMatch" name="情報源" key="source" description="この地物入力の主たる情報源(GPS, 測量, Yahoo, ...)" priority="lowest"/>
+    <input type="freetext" category="その他" presence="onTagMatch" name="情報源" key="source" description="この地物入力の主たる情報源(GPS, 測量, Yahoo, ...)" priority="lowest"/>
   </inputSet>
 
   <inputSet id="designation">
-    <input type="freetext" category="詳細" presence="onTagMatch" description="Official designation or classification" name="Designation" key="designation"/>
+    <input type="freetext" category="その他" presence="onTagMatch" description="Official designation or classification" name="Designation" key="designation"/>
   </inputSet>
 
   <inputSet id="common">
@@ -56,21 +110,21 @@
 
   <inputSet id="names">
     <input type="freetext" presence="always"
-        name="名称" category="詳細" priority="highest"
+        name="名称" category="名称" priority="highest"
         key="name" description="一般的な名称"/>
     <input type="freetext" presence="onTagMatch"
-        name="国際的な名称" category="詳細"
+        name="国際的な名称" category="名称"
         key="int_name" description="国際的に理解できる名称"/>
     <input type="freetext" presence="onTagMatch"
-        name="歴史的名称" category="詳細" priority="low"
+        name="歴史的名称" category="名称" priority="low"
         key="old_name" description="歴史的なあるいは、以前の名称"/>
     <input type="freetext" presence="onTagMatch"
-        name="別称" category="詳細" priority="low"
+        name="別称" category="名称" priority="low"
         key="alt_name" description="別の現在利用されている名称"/>
   </inputSet>
 
   <inputSet id="wifi">
-    <input type="choice" presence="onTagMatch" category="詳細" name="無線LANサービス" key="wifi">
+    <input type="choice" presence="onTagMatch" category="飲食店" name="無線LANサービス" key="wifi">
       <choice value="free" text="Free"/>
       <choice value="yes" text="Yes"/>
       <choice value="no" text="No"/>
@@ -85,11 +139,11 @@
   </inputSet>
 
   <inputSet id="web">
-    <input type="freetext" presence="onTagMatch" category="Address" description="WebサイトのURL" name="Webサイト" key="website"/>
+    <input type="freetext" presence="onTagMatch" category="Web" description="WebサイトのURL" name="Webサイト" key="website"/>
   </inputSet>
 
   <inputSet id="cuisine">
-    <input type="choice" presence="always" name="料理の種別" category="詳細" description="レストランのタイプ" key="cuisine">
+    <input type="choice" presence="always" name="料理の種別" category="飲食店" description="レストランのタイプ" key="cuisine">
       <!-- The 30 most popular values according to taginfo 23/12/2010 -->
       <choice value="burger" text="ハンバーガー"/>
       <choice value="chicken" text="鶏料理"/>
@@ -171,22 +225,22 @@
 
   <inputSet id="roadRefs">
     <input type="freetext" presence="always"
-        name="道路番号" category="詳細"  priority="high"
+        name="道路番号" category="名称" priority="high"
         key="ref" description="公式の道路番号"/>
     <input type="freetext" presence="onTagMatch"
-        name="国際道路番号" category="詳細" subcategory="Additional names" 
+        name="国際道路番号" category="名称"
         key="int_ref" description="公式な国際的な道路番号"/>
     <input type="freetext" presence="onTagMatch"
-        name="古い道路番号" category="詳細" subcategory="Additional names" priority="low"
+        name="古い道路番号" category="名称" priority="low"
         key="old_ref" description="歴史的なあるいは、以前の道路番号"/>
   </inputSet>
 
   <inputSet id="roadPhysical">
     <input type="freetext" presence="onTagMatch"
-        name="幅" category="詳細" subcategory="Physical"
+        name="幅" category="物理特性"
         key="width" description="道路幅" layout="horizontal"/>
     <input type="choice" presence="onTagMatch"
-        name="道路表面" category="詳細" description="路面のタイプ"
+        name="道路表面" category="物理特性" description="路面のタイプ"
         key="surface" layout="horizontal">
       <choice value="unpaved" text="未舗装" description="Road surface is unsealed"/>
       <choice value="paved" text="舗装" description="Road surface is sealed"/>
@@ -203,31 +257,31 @@
     <inputSet ref="tunnel"/>
     <inputSet ref="embankment-cutting"/>
     <!-- not sure which category best suits put area=yes -->
-    <input type="checkbox" presence="onTagMatch" category="詳細" subcategory="Physical" key="area" name="Open area" description="The way is a large open space, like at a dock, where vehicles can move anywhere within the space, rather than just along the edge." />
+    <input type="checkbox" presence="onTagMatch" category="通行制限" key="area" name="Open area" description="The way is a large open space, like at a dock, where vehicles can move anywhere within the space, rather than just along the edge." />
   </inputSet>
 
   <inputSet id="roadLanes">
-    <input presence="onTagMatch" type="number" name="レーン" category="詳細" description="Total number of lanes, counting both directions"
+    <input presence="onTagMatch" type="number" name="レーン" category="物理特性" description="Total number of lanes, counting both directions"
            key="lanes" minimum="1" maximum="10" layout="horizontal"/>
   </inputSet>
 
   <inputSet id="bridge">
     <input type="choice" presence="onTagMatch"
-        name="Bridge" category="詳細" description="Road goes over a bridge"
+        name="Bridge" category="物理特性" description="Road goes over a bridge"
         key="bridge" layout="horizontal">
       <choice value="yes" text="一般的な橋" description="一般的な橋 -- タイプ不明"/>
       <choice value="viaduct" text="Viaduct" description="Viaduct"/>
       <choice value="suspension" text="吊り橋"/>
     </input>
     <input type="slider" presence="onTagMatch"
-        name="Layer" category="詳細" description="相対的な高低の位置 (-5　最低, +5 最高)"
+        name="Layer" category="物理特性" description="相対的な高低の位置 (-5　最低, +5 最高)"
         key="layer" minimum="-5" maximum="5" default="0" snapInterval="1" labels="Lowest,Ground,Highest"
         defaultName="Ground"/>
   </inputSet>
   <inputSet id="tunnel">
     <!-- Not ideal, used for non-roads too. -->  
     <input type="choice" presence="onTagMatch"
-        name="トンネル" category="詳細"subcategory="Physical" description="道路はトンネルの中にある"
+        name="トンネル" category="物理特性" description="道路はトンネルの中にある"
         key="tunnel" layout="horizontal">
       <choice value="yes" text="トンネル" description="一般的なトンネル"/>
     </input>
@@ -235,12 +289,12 @@
 
   <inputSet id="embankment-cutting">
     <input type="choice"
-           name="Embankment" category="詳細" subcategory="Physical" description="Road supported on a raised bed of earth and rock."
+           name="Embankment" category="Physical" description="Road supported on a raised bed of earth and rock."
            key="embankment" layout="horizontal">
       <choice value="yes" text="Embankment"/>
     </input>
     <input type="choice"
-           name="Cutting" category="詳細" subcategory="Physical" description="Road carved out of hill on one or both sides."
+           name="Cutting" category="Physical" description="Road carved out of hill on one or both sides."
            key="cutting" layout="horizontal">
       <choice value="yes" text="Cutting"/>
     </input>
@@ -248,14 +302,14 @@
   </inputSet>
 
   <inputSet id="rail-electrification">
-    <input type="choice" name="Electrified" category="詳細" subcategory="Electrification" description="Is the track electrified (whether by 3rd rail, overhead wires, etc)?"
+    <input type="choice" name="Electrified" category="Electrification" description="Is the track electrified (whether by 3rd rail, overhead wires, etc)?"
            key="electrified">
       <choice value="yes" text="Yes"/>
       <choice value="contact_line" text="Overhead line"/>
       <choice value="rail" text="Third rail"/>
       <choice value="no" text="No"/>
     </input>
-    <input type="choice" name="Voltage" category="詳細" subcategory="Electrification" description="Nominal voltage of electric wires"
+    <input type="choice" name="Voltage" category="Electrification" description="Nominal voltage of electric wires"
            key="voltage" presence="withCategory">
       <choice value="600" text="600V"/>
       <choice value="750" text="750V"/>
@@ -264,7 +318,7 @@
       <choice value="15000" text="15kV"/>
       <choice value="25000" text="25kV"/>
     </input>
-    <input type="choice" name="Frequency" category="詳細" subcategory="Electrification" description="Frequency in Hertz of alternating current power supply"
+    <input type="choice" name="Frequency" category="Electrification" description="Frequency in Hertz of alternating current power supply"
            key="frequency" presence="withCategory">
       <choice value="0" text="DC"/>
       <choice value="16.67" text="16.67 Hz"/>
@@ -275,8 +329,18 @@
     </input>
   </inputSet>
 
+  <inputSet id="rail-usage">
+    <input type="choice" name="用途" category="用途" description="路線の主たる用途" key="usage">
+      <choice value="main" text="幹線" description="鉄道網の幹線。"/>
+      <choice value="branch" text="支線" description="鉄道網の支線や地方線。"/>
+      <choice value="industrial" text="産業用"/>
+      <choice value="tourism" text="旅行用" />
+      <choice value="military" text="軍用"/>
+    </input>
+  </inputSet>
+
   <inputSet id="fee">
-    <input type="freetext" presence="onTagMatch" category="詳細" subcategory="Restrictions" description="The charge/cost of using this amenity" name="Fee" key="fee"/>
+    <input type="freetext" presence="onTagMatch" category="Restrictions" description="The charge/cost of using this amenity" name="Fee" key="fee"/>
   </inputSet>
 
   <inputSet id="roadRestrictions">
@@ -319,8 +383,8 @@
   </inputSet>
 
   <inputSet id="naptan">
-    <input type="freetext" presence="onTagMatch" category="交通" description="12 character internal Naptan ID" name="Atco Code" key="naptan:AtcoCode"/>
-    <input type="choice" presence="onTagMatch" category="交通" description="The eight-point compass bearning" name="Naptan Bearing" key="naptan:Bearing" >
+    <input type="freetext" presence="onTagMatch" category="Naptan" description="12 character internal Naptan ID" name="Atco Code" key="naptan:AtcoCode"/>
+    <input type="choice" presence="onTagMatch" category="Naptan" description="The eight-point compass bearning" name="Naptan Bearing" key="naptan:Bearing" >
       <choice value="N"  match="N"  text="北"  description=""/>
       <choice value="NE" match="NE" text="北東" description=""/>
       <choice value="E"  match="E"  text="東"  description=""/>
@@ -330,15 +394,15 @@
       <choice value="W"  match="W"  text="西"  description=""/>
       <choice value="NW" match="NW" text="北西" description=""/>
     </input>
-    <input type="freetext" presence="onTagMatch" category="交通" description="The naptan common name" name="Naptan Common Name (read-only)" key="naptan:CommonName"/>
-    <input type="freetext" presence="onTagMatch" category="交通" description="" name="Naptan Indicator (read-only)" key="naptan:Indicator"/>
-    <input type="freetext" presence="onTagMatch" category="交通" description="" name="Naptan Street (read-only)" key="naptan:Street"/>
-    <input type="freetext" presence="onTagMatch" category="交通" description="Delete this when the details have been verified on-the-ground" name="Naptan Verified?" key="naptan:verified"/>
+    <input type="freetext" presence="onTagMatch" category="Naptan" description="The naptan common name" name="Naptan Common Name (read-only)" key="naptan:CommonName"/>
+    <input type="freetext" presence="onTagMatch" category="Naptan" description="" name="Naptan Indicator (read-only)" key="naptan:Indicator"/>
+    <input type="freetext" presence="onTagMatch" category="Naptan" description="" name="Naptan Street (read-only)" key="naptan:Street"/>
+    <input type="freetext" presence="onTagMatch" category="Naptan" description="Delete this when the details have been verified on-the-ground" name="Naptan Verified?" key="naptan:verified"/>
   </inputSet>
 
   <inputSet id="buses">
-    <input type="freetext" presence="always" category="交通" name="Stop Name" key="name" description="The name of the bus stop"/>
-    <input type="freetext" presence="always" category="交通" name="Local Ref" key="local_ref" description="The local reference of the stop, usually one or two letters above the main flag, used at bus interchanges, e.g. L, BX"/>
+    <input type="freetext" presence="always" category="Bus Stop" name="Stop Name" key="name" description="The name of the bus stop"/>
+    <input type="freetext" presence="always" category="Bus Stop" name="Local Ref" key="local_ref" description="The local reference of the stop, usually one or two letters above the main flag, used at bus interchanges, e.g. L, BX"/>
     <inputSet ref="naptan"/>
   </inputSet>
 
@@ -421,7 +485,7 @@
   </inputSet>
 
   <inputSet id="ldp">
-    <input type="route" name="National Walking Route" description="National walking route" category="Walk" priority="normal">
+    <input type="route" name="National Walking Route" description="National walking route" category="Walking" priority="normal">
       <match k="type" v="route"/>
       <match k="route" v="hiking|foot"/>
       <match k="network" v="nwn"/>
@@ -430,7 +494,7 @@
         <font size="12pt">${name}</font>
       </icon>
     </input>
-    <input type="route" name="Regional Walking Route" description="Regional walking route" category="Walk" priority="low">
+    <input type="route" name="Regional Walking Route" description="Regional walking route" category="Walking" priority="low">
       <match k="type" v="route"/>
       <match k="route" v="hiking|foot"/>
       <match k="network" v="rwn"/>
@@ -439,7 +503,7 @@
         <font size="12pt">${name}</font>
       </icon>
     </input>
-    <input type="route" name="Local Walking Route" description="Local walking route" category="Walk" priority="lowest">
+    <input type="route" name="Local Walking Route" description="Local walking route" category="Walking" priority="lowest">
       <match k="type" v="route"/>
       <match k="route" v="hiking|foot"/>
       <match k="network" v="lwn"/>
@@ -463,7 +527,7 @@
 <!-- Would be good to have a dedicated 'access' type of input -->
   <!-- all the description fields are identical at the moment for ease of maintenance, should be tailored in future. -->
   <inputSet id="boatPermissions">
-    <input type="choice" name="ボートの許可" category="通行制限" key="boat" description="Are boats allowed to use this waterway?">
+    <input type="choice" name="ボートの許可" category="通行許可" key="boat" description="Are boats allowed to use this waterway?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -473,7 +537,7 @@
   </inputSet>
 
   <inputSet id="permissions">
-    <input type="choice" name="一般通航" category="通行制限" key="access" description="Is there a general right of access, regardless of mode of transport?">
+    <input type="choice" name="一般通航" category="通行許可" key="access" description="Is there a general right of access, regardless of mode of transport?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -481,7 +545,7 @@
       <choice value="designated" text="Designated" description="Permitted, according to signs or specific local laws."/>
     </input>
 
-    <input type="choice" name="自動車" category="通行制限" key="motor_vehicle" description="Are cars and other private vehicles allowed?">
+    <input type="choice" name="自動車" category="通行許可" key="motor_vehicle" description="Are cars and other private vehicles allowed?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -489,7 +553,7 @@
       <choice value="designated" text="Designated" description="Permitted, according to signs or specific local laws."/>
     </input>
 
-    <input type="choice" name="Horses" category="通行制限" key="horse" description="Are cars and other private vehicles allowed?">
+    <input type="choice" name="Horses" category="通行許可" key="horse" description="Are cars and other private vehicles allowed?">
       <choice value="yes" text="許可" description="一般に通行可能"/>
       <choice value="no" text="禁止" description="公衆は通行できない"/>
       <choice value="permissive" text="許諾" description="私道の通行が許諾されている"/>
@@ -518,11 +582,11 @@
   </inputSet>
 
   <inputSet id="isBuilding">
-    <input type="checkbox" presence="onTagMatch" category="詳細" description="このタグはひとつの建物を表しているか？" name="建物" key="building"/>
+    <input type="checkbox" presence="onTagMatch" category="その他" description="このタグはひとつの建物を表しているか？" name="建物" key="building"/>
   </inputSet>
 
   <inputSet id="powerCables">
-    <input type="choice" name="ケーブル" key="cables" presence="always" category="詳細">
+    <input type="choice" name="ケーブル" key="cables" presence="always" category="電力">
       <choice value="2" text="2"/>
       <choice value="3" text="3"/>
       <choice value="4" text="4"/>
@@ -531,7 +595,7 @@
       <choice value="10" text="10"/>
       <choice value="12" text="12"/>
     </input>
-    <input type="choice" name="電圧" key="voltage" presence="always" category="詳細">
+    <input type="choice" name="電圧" key="voltage" presence="always" category="電力">
       <!-- choices based on http://osmdoc.com/en/tag/voltage/#values-->
       <choice value="400" text="400 V"/>
       <choice value="600" text="600 V"/>
