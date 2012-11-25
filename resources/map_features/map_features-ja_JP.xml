@@ -56,19 +56,19 @@ Quick documentation:
   <category name="道路" id="roads"/>
   <category name="Paths" id="paths"/>
   <category name="ショッピング" id="shopping"/>
-  <category name="飲食" id="foodanddrink"/>
+  <category name="Food and Drink" id="foodanddrink"/>
   <category name="Amenity" id="amenity"/>
-  <category name="観光" id="tourism"/>
-  <category name="宿泊施設" id="accommodation"/>
-  <category name="交通機関" id="transport"/>
-  <category name="河川" id="water"/>
-  <category name="自然" id="natural"/>
+  <category name="Tourism" id="tourism"/>
+  <category name="Accommodation" id="accommodation"/>
+  <category name="Transport" id="transport"/>
+  <category name="Water" id="water"/>
+  <category name="Natural" id="natural"/>
   <category name="Barrier" id="barrier"/>
   <category name="Power" id="power"/>
-  <category name="役所" id="admin"/>
-  <category name="建物" id="buildings"/>
-  <category name="土地利用" id="landuse"/>
-  <category name="農業" id="agriculture"/>
+  <category name="Admin" id="admin"/>
+  <category name="Buildings" id="buildings"/>
+  <category name="Landuse" id="landuse"/>
+  <category name="Agriculture" id="agriculture"/>
   <category name="Advanced" id="advanced"/>
   <category name="Places" id="places"/>
   <category name="Sport and Leisure" id="sport"/>
