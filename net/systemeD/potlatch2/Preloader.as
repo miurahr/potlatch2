@@ -48,7 +48,6 @@ package net.systemeD.potlatch2 {
 
             //creates all visual elements
             createAssets();
-            Globals.vars.locale = loaderInfo.parameters['locale'];
 
 			// request .zip files
 			if (loaderInfo.parameters['assets']) {
