@@ -37,18 +37,7 @@ package net.systemeD.potlatch2.mapfeatures {
         
             var xmlLoader:NestedXMLLoader = new NestedXMLLoader();
             xmlLoader.addEventListener(Event.COMPLETE, onFeatureLoad);
-<<<<<<< HEAD
-            
-            if (Globals.vars.locale != null){
-                // FIXME: need to test existence of localized map_features XML file before load.
-                xmlLoader.load("map_features/map_features" + "-" + Globals.vars.locale + ".xml");
-            } else {
-                xmlLoader.load("map_features/map_features.xml");
-            }
-            
-=======
             xmlLoader.load("map_features.xml");
->>>>>>> parent of 9d8b3b7... i18n: support localized map_features
         }
 
         /** The loaded source XML file itself. */
