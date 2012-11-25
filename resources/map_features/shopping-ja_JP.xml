@@ -1,13 +1,13 @@
 <featureGroup>
   <feature name="スーパーマーケット">
-    <category>shopping</category><!-- don't localize here -->
+    <category>shopping</category>
     <icon image="features/pois/shopping_supermarket.n.24.png">
       ${name}
     </icon>
-    <help>http://wiki.openstreetmap.org/wiki/JA:Tag:shop%3Dsupermarket</help><!-- japanese wiki -->
+    <help>http://wiki.openstreetmap.org/wiki/Tag:shop%3Dsupermarket</help>
     <point/>
     <area/>
-    <tag k="shop" v="supermarket"/><!-- don't localize here -->
+    <tag k="shop" v="supermarket"/>
     <inputSet ref="names"/>
     <inputSet ref="web"/>
     <inputSet ref="buildingAddress"/>

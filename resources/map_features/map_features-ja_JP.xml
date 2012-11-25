@@ -53,7 +53,7 @@ Quick documentation:
 <mapFeatures>
 
   <!-- Categories -->
-  <category name="道路" id="roads"/><!-- don't change id! for localize -->
+  <category name="道路" id="roads"/>
   <category name="Paths" id="paths"/>
   <category name="ショッピング" id="shopping"/>
   <category name="飲食" id="foodanddrink"/>
@@ -63,44 +63,42 @@ Quick documentation:
   <category name="交通機関" id="transport"/>
   <category name="河川" id="water"/>
   <category name="自然" id="natural"/>
-  <category name="障害物" id="barrier"/>
+  <category name="Barrier" id="barrier"/>
   <category name="Power" id="power"/>
   <category name="役所" id="admin"/>
   <category name="建物" id="buildings"/>
   <category name="土地利用" id="landuse"/>
   <category name="農業" id="agriculture"/>
-  <category name="高度" id="advanced"/>
-  <category name="場所" id="places"/>
-  <category name="スポーツとレジャー" id="sport"/>
-  <category name="人工物" id="manmade"/>
+  <category name="Advanced" id="advanced"/>
+  <category name="Places" id="places"/>
+  <category name="Sport and Leisure" id="sport"/>
+  <category name="Man-made" id="manmade"/>
 
   <!-- Common input sets -->
-  
-  <!-- you can localize name, description, category and text. don't touch ref, id, key, value, priority, type, presence -->
 
-  <inputSet id="simpleName"><!-- don't change id! -->
-    <input type="freetext" presence="always" name="名称" key="name" description="名称" priority="highest"/>
+  <inputSet id="simpleName">
+    <input type="freetext" presence="always" name="Name" key="name" description="The name" priority="highest"/>
   </inputSet>
-  
+
   <inputSet id="nameAndRef">
     <inputSet ref="simpleName" />
-    <input type="freetext" presence="always" name="参照番号" key="ref" description="地物を参照する番号やコード" />
+    <input type="freetext" presence="always" name="Reference number" key="ref" description="A reference number or code used to identify this thing." />
   </inputSet>
 
    <inputSet id="simpleBrand"> 
-     <input type="freetext" category="名称" presence="always" name="ブランド" key="brand" description="ブランド、i.e. Acme"/> 
+     <input type="freetext" category="Naming" presence="always" name="Brand" key="brand" description="Brand, i.e. Acme"/> 
    </inputSet> 
   
    <inputSet id="simpleOperator"> 
-     <input type="freetext" category="名称" presence="always" name="運営会社" key="operator" description="運営会社, i.e. Acme Springfield Ltd"/> 
+     <input type="freetext" category="Naming" presence="always" name="Operator" key="operator" description="Operator, i.e. Acme Springfield Ltd"/> 
    </inputSet> 
 
   <inputSet id="source">
-    <input type="freetext" category="その他" presence="onTagMatch" name="情報源" key="source" description="この地物入力の主たる情報源(GPS, 測量, Yahoo, ...)" priority="lowest"/>
+    <input type="freetext" category="Misc" presence="onTagMatch" name="Source" key="source" description="The primary source of information for this object (GPS, survey, Yahoo, ...)" priority="lowest"/>
   </inputSet>
 
   <inputSet id="designation">
-    <input type="freetext" category="その他" presence="onTagMatch" description="Official designation or classification" name="Designation" key="designation"/>
+    <input type="freetext" category="Misc" presence="onTagMatch" description="Official designation or classification" name="Designation" key="designation"/>
   </inputSet>
 
   <inputSet id="common">
@@ -110,21 +108,21 @@ Quick documentation:
 
   <inputSet id="names">
     <input type="freetext" presence="always"
-        name="名称" category="名称" priority="highest"
-        key="name" description="一般的な名称"/>
+        name="Name" category="Naming" priority="highest"
+        key="name" description="The most common name"/>
     <input type="freetext" presence="onTagMatch"
-        name="国際的な名称" category="名称"
-        key="int_name" description="国際的に理解できる名称"/>
+        name="International Name" category="Naming"
+        key="int_name" description="The internationally recognised name"/>
     <input type="freetext" presence="onTagMatch"
-        name="歴史的名称" category="名称" priority="low"
-        key="old_name" description="歴史的なあるいは、以前の名称"/>
+        name="Historical Name" category="Naming" priority="low"
+        key="old_name" description="The historic or previous name"/>
     <input type="freetext" presence="onTagMatch"
-        name="別称" category="名称" priority="low"
-        key="alt_name" description="別の現在利用されている名称"/>
+        name="Alternative Name" category="Naming" priority="low"
+        key="alt_name" description="An alternative, currently used, name"/>
   </inputSet>
 
   <inputSet id="wifi">
-    <input type="choice" presence="onTagMatch" category="飲食店" name="無線LANサービス" key="wifi">
+    <input type="choice" presence="onTagMatch" category="Eating" name="Wifi" key="wifi">
       <choice value="free" text="Free"/>
       <choice value="yes" text="Yes"/>
       <choice value="no" text="No"/>
@@ -132,49 +130,49 @@ Quick documentation:
   </inputSet>
 
   <inputSet id="buildingAddress">
-    <input type="freetext" presence="onTagMatch" category="住所" description="The number of the house, e.g. 156 or 10-12" name="部屋番号" key="addr:housenumber"/>
-    <input type="freetext" presence="onTagMatch" category="住所" description="The name of the house, e.g. Riverbank Cottage" name="建物名称" key="addr:housename"/>
-    <input type="freetext" presence="onTagMatch" category="住所" description="The Street Name (optional)" name="Street Name" key="addr:street"/>
-    <input type="freetext" presence="onTagMatch" category="住所" description="The postcode" name="郵便番号" key="addr:postcode"/>
+    <input type="freetext" presence="onTagMatch" category="Address" description="The number of the house, e.g. 156 or 10-12" name="House Number" key="addr:housenumber"/>
+    <input type="freetext" presence="onTagMatch" category="Address" description="The name of the house, e.g. Riverbank Cottage" name="Building Name" key="addr:housename"/>
+    <input type="freetext" presence="onTagMatch" category="Address" description="The Street Name (optional)" name="Street Name" key="addr:street"/>
+    <input type="freetext" presence="onTagMatch" category="Address" description="The postcode" name="Postcode" key="addr:postcode"/>
   </inputSet>
 
   <inputSet id="web">
-    <input type="freetext" presence="onTagMatch" category="Web" description="WebサイトのURL" name="Webサイト" key="website"/>
+    <input type="freetext" presence="onTagMatch" category="Web" description="The URL of the website" name="Website" key="website"/>
   </inputSet>
 
   <inputSet id="cuisine">
-    <input type="choice" presence="always" name="料理の種別" category="飲食店" description="レストランのタイプ" key="cuisine">
+    <input type="choice" presence="always" name="Cuisine" category="Eating" description="The type of food that they serve" key="cuisine">
       <!-- The 30 most popular values according to taginfo 23/12/2010 -->
-      <choice value="burger" text="ハンバーガー"/>
-      <choice value="chicken" text="鶏料理"/>
-      <choice value="chinese" text="中華"/>
-      <choice value="coffee_shop" text="コーヒー"/>
-      <choice value="greek" text="ギリシャ料理"/>
-      <choice value="pizza" text="ピザ"/>
-      <choice value="sandwich" text="サンドウイッチ"/>
-      <choice value="seafood" text="シーフード"/>
+      <choice value="burger" text="Burger"/>
+      <choice value="chicken" text="Chicken"/>
+      <choice value="chinese" text="Chinese"/>
+      <choice value="coffee_shop" text="Coffee Shop"/>
+      <choice value="greek" text="Greek"/>
+      <choice value="pizza" text="Pizza"/>
+      <choice value="sandwich" text="Sandwich"/>
+      <choice value="seafood" text="Sea Food"/>
       <choice value="regional" text="Regional"/>
-      <choice value="italian" text="イタリアン料理"/>
-      <choice value="german" text="ドイツ料理"/>
-      <choice value="kebab" text="ケバブ・ギョロ"/>
-      <choice value="indian" text="インド料理"/>
-      <choice value="asian" text="アジア料理"/>
-      <choice value="mexican" text="メキシコ料理"/>
-      <choice value="thai" text="タイ料理"/>
-      <choice value="japanese" text="和食"/>
-      <choice value="ice_cream" text="アイスクリーム"/>
-      <choice value="fish_and_chips" text="フィッシュ &amp; チップス"/>
-      <choice value="turkish" text="トルコ料理"/>
-      <choice value="french" text="フランス料理"/>
-      <choice value="sushi" text="寿司"/>
-      <choice value="american" text="アメリカ料理"/>
-      <choice value="steak_house" text="ステーキハウス"/>
-      <choice value="international" text="国際料理"/>
-      <choice value="spanish" text="スペイン料理"/>
-      <choice value="vietnamese" text="ベトナム料理"/>
-      <choice value="fish" text="魚料理"/>
+      <choice value="italian" text="Italian"/>
+      <choice value="german" text="German"/>
+      <choice value="kebab" text="Kebab/souvlaki/gyro"/>
+      <choice value="indian" text="Indian"/>
+      <choice value="asian" text="Asian"/>
+      <choice value="mexican" text="Mexican"/>
+      <choice value="thai" text="Thai"/>
+      <choice value="japanese" text="Japanese"/>
+      <choice value="ice_cream" text="Ice-cream"/>
+      <choice value="fish_and_chips" text="Fish &amp; Chips"/>
+      <choice value="turkish" text="Turkish"/>
+      <choice value="french" text="French"/>
+      <choice value="sushi" text="Sushi"/>
+      <choice value="american" text="American"/>
+      <choice value="steak_house" text="Steak House"/>
+      <choice value="international" text="International"/>
+      <choice value="spanish" text="Spanish"/>
+      <choice value="vietnamese" text="Vietnamese"/>
+      <choice value="fish" text="Fish"/>
       <choice value="bavarian" text="Bavarian"/>
-      <choice value="vegetarian" text="ベジタリアン"/>
+      <choice value="vegetarian" text="Vegetarian"/>
 
       <help>http://wiki.openstreetmap.org/wiki/Key:cuisine</help>
     </input>
@@ -225,65 +223,65 @@ Quick documentation:
 
   <inputSet id="roadRefs">
     <input type="freetext" presence="always"
-        name="道路番号" category="名称" priority="high"
-        key="ref" description="公式の道路番号"/>
+        name="Reference" category="Naming" priority="high"
+        key="ref" description="The official reference number"/>
     <input type="freetext" presence="onTagMatch"
-        name="国際道路番号" category="名称"
-        key="int_ref" description="公式な国際的な道路番号"/>
+        name="International Reference" category="Naming"
+        key="int_ref" description="The official international reference number"/>
     <input type="freetext" presence="onTagMatch"
-        name="古い道路番号" category="名称" priority="low"
-        key="old_ref" description="歴史的なあるいは、以前の道路番号"/>
+        name="Old Reference" category="Naming" priority="low"
+        key="old_ref" description="The historic or previous reference number"/>
   </inputSet>
 
   <inputSet id="roadPhysical">
     <input type="freetext" presence="onTagMatch"
-        name="幅" category="物理特性"
-        key="width" description="道路幅" layout="horizontal"/>
+        name="Width" category="Physical"
+        key="width" description="Width of the road" layout="horizontal"/>
     <input type="choice" presence="onTagMatch"
-        name="道路表面" category="物理特性" description="路面のタイプ"
+        name="Surface" category="Physical" description="Type of road surface"
         key="surface" layout="horizontal">
-      <choice value="unpaved" text="未舗装" description="Road surface is unsealed"/>
-      <choice value="paved" text="舗装" description="Road surface is sealed"/>
-      <choice value="asphalt" text="アスファルト"/>
-      <choice value="concrete" text="コンクリート"/>
-      <choice value="paving_stones" text="敷石"/>
+      <choice value="unpaved" text="Unpaved" description="Road surface is unsealed"/>
+      <choice value="paved" text="Paved" description="Road surface is sealed"/>
+      <choice value="asphalt" text="Asphalt"/>
+      <choice value="concrete" text="Concrete"/>
+      <choice value="paving_stones" text="Paving stones"/>
       <choice value="cobblestone" text="Cobblestone"/>
-      <choice value="sand" text="砂"/>
+      <choice value="sand" text="Sand"/>
       <choice value="gravel" text="Gravel"/>
-      <choice value="dirt" text="ダートロード"/>
-      <choice value="grass" text="草地"/>
+      <choice value="dirt" text="Dirt"/>
+      <choice value="grass" text="Grass"/>
     </input>
     <inputSet ref="bridge"/>
     <inputSet ref="tunnel"/>
     <inputSet ref="embankment-cutting"/>
     <!-- not sure which category best suits put area=yes -->
-    <input type="checkbox" presence="onTagMatch" category="通行制限" key="area" name="Open area" description="The way is a large open space, like at a dock, where vehicles can move anywhere within the space, rather than just along the edge." />
+    <input type="checkbox" presence="onTagMatch" category="Restrictions" key="area" name="Open area" description="The way is a large open space, like at a dock, where vehicles can move anywhere within the space, rather than just along the edge." />
   </inputSet>
 
   <inputSet id="roadLanes">
-    <input presence="onTagMatch" type="number" name="レーン" category="物理特性" description="Total number of lanes, counting both directions"
+    <input presence="onTagMatch" type="number" name="Lanes" category="Physical" description="Total number of lanes, counting both directions"
            key="lanes" minimum="1" maximum="10" layout="horizontal"/>
   </inputSet>
 
   <inputSet id="bridge">
     <input type="choice" presence="onTagMatch"
-        name="Bridge" category="物理特性" description="Road goes over a bridge"
+        name="Bridge" category="Physical" description="Road goes over a bridge"
         key="bridge" layout="horizontal">
-      <choice value="yes" text="一般的な橋" description="一般的な橋 -- タイプ不明"/>
+      <choice value="yes" text="Generic Bridge" description="Generic bridge -- type unknown"/>
       <choice value="viaduct" text="Viaduct" description="Viaduct"/>
-      <choice value="suspension" text="吊り橋"/>
+      <choice value="suspension" text="Suspension bridge"/>
     </input>
     <input type="slider" presence="onTagMatch"
-        name="Layer" category="物理特性" description="相対的な高低の位置 (-5　最低, +5 最高)"
+        name="Layer" category="Physical" description="Relative vertical positions (-5 lowest, +5 highest)"
         key="layer" minimum="-5" maximum="5" default="0" snapInterval="1" labels="Lowest,Ground,Highest"
         defaultName="Ground"/>
   </inputSet>
   <inputSet id="tunnel">
     <!-- Not ideal, used for non-roads too. -->  
     <input type="choice" presence="onTagMatch"
-        name="トンネル" category="物理特性" description="道路はトンネルの中にある"
+        name="Tunnel" category="Physical" description="Road goes into a tunnel"
         key="tunnel" layout="horizontal">
-      <choice value="yes" text="トンネル" description="一般的なトンネル"/>
+      <choice value="yes" text="Tunnel" description="Generic tunnel"/>
     </input>
   </inputSet>
 
@@ -330,12 +328,12 @@ Quick documentation:
   </inputSet>
 
   <inputSet id="rail-usage">
-    <input type="choice" name="用途" category="用途" description="路線の主たる用途" key="usage">
-      <choice value="main" text="幹線" description="鉄道網の幹線。"/>
-      <choice value="branch" text="支線" description="鉄道網の支線や地方線。"/>
-      <choice value="industrial" text="産業用"/>
-      <choice value="tourism" text="旅行用" />
-      <choice value="military" text="軍用"/>
+    <input type="choice" name="Usage" category="Usage" description="Main use of the line" key="usage">
+      <choice value="main" text="Main line" description="The principal artery of a rail system."/>
+      <choice value="branch" text="Branch line" description="A secondary line, branching off a main line."/>
+      <choice value="industrial" text="Industrial"/>
+      <choice value="tourism" text="Tourism" />
+      <choice value="military" text="Military"/>
     </input>
   </inputSet>
 
@@ -345,17 +343,17 @@ Quick documentation:
 
   <inputSet id="roadRestrictions">
     <input type="choice" presence="always"
-        name="Oneway" category="通行制限" description="Oneway roads"
+        name="Oneway" category="Restrictions" description="Oneway roads"
         key="oneway">
-      <choice value="yes" match="yes|true|1" text="一方通行"
-        description="この道路は一方通行でのみ通行可能" icon="features/oneway__yes.png"/>
-      <choice value="no" match="no|false|0" text="両方向通行"
-        description="この道路は、両方向に通行可能" icon="features/oneway__no.png"/>
+      <choice value="yes" match="yes|true|1" text="One way"
+        description="Road can only be travelled in direction of way" icon="features/oneway__yes.png"/>
+      <choice value="no" match="no|false|0" text="Two way"
+        description="Road can be travelled in both directions" icon="features/oneway__no.png"/>
       <choice value="-1" match="-1|reverse" text="One way reverse"
-        description="この道路は、逆方向に通行可能" icon="features/oneway__-1.png"/>
+        description="Road can be travelled in opposite direction to way" icon="features/oneway__-1.png"/>
     </input>
     <input type="speed" presence="onTagMatch"
-        name="制限速度" category="通行制限" description="この道路の最大速度"
+        name="Speed Limit" category="Restrictions" description="Maximum permitted speed on this road"
         key="maxspeed"/>
   </inputSet>
 
@@ -368,31 +366,31 @@ Quick documentation:
   </inputSet>
 
   <inputSet id="turnRestrictions">
-    <input type="turn" name="方向転換制限" description="方向転換制限" category="通行制限" priority="normal" presence="onTagMatch">
+    <input type="turn" name="Turn restriction" description="Turn restriction" category="Restrictions" priority="normal" presence="onTagMatch">
       <match k="type" v="restriction"/>
       <role role="via"/>
     </input>
   </inputSet>
 
   <inputSet id="pedestrians">
-    <input type="choice" name="通行人" description="通行人がこの道路を使えるか、歩道を含む" category="歩行" key="foot">
-      <choice value="yes" text="許可"/>
-      <choice value="no" text="禁止"/>
-      <choice value="designated" text="ルール"/>
+    <input type="choice" name="Pedestrians" description="Can pedestrians use this road, including footpaths if any?" category="Walking" key="foot">
+      <choice value="yes" text="Allowed"/>
+      <choice value="no" text="Prohibited"/>
+      <choice value="designated" text="Designated"/>
     </input>
   </inputSet>
 
   <inputSet id="naptan">
     <input type="freetext" presence="onTagMatch" category="Naptan" description="12 character internal Naptan ID" name="Atco Code" key="naptan:AtcoCode"/>
     <input type="choice" presence="onTagMatch" category="Naptan" description="The eight-point compass bearning" name="Naptan Bearing" key="naptan:Bearing" >
-      <choice value="N"  match="N"  text="北"  description=""/>
-      <choice value="NE" match="NE" text="北東" description=""/>
-      <choice value="E"  match="E"  text="東"  description=""/>
-      <choice value="SE" match="SE" text="南東" description=""/>
-      <choice value="S"  match="S"  text="南"  description=""/>
-      <choice value="SW" match="SW" text="南西" description=""/>
-      <choice value="W"  match="W"  text="西"  description=""/>
-      <choice value="NW" match="NW" text="北西" description=""/>
+      <choice value="N"  match="N"  text="N"  description=""/>
+      <choice value="NE" match="NE" text="NE" description=""/>
+      <choice value="E"  match="E"  text="E"  description=""/>
+      <choice value="SE" match="SE" text="SE" description=""/>
+      <choice value="S"  match="S"  text="S"  description=""/>
+      <choice value="SW" match="SW" text="SW" description=""/>
+      <choice value="W"  match="W"  text="W"  description=""/>
+      <choice value="NW" match="NW" text="NW" description=""/>
     </input>
     <input type="freetext" presence="onTagMatch" category="Naptan" description="The naptan common name" name="Naptan Common Name (read-only)" key="naptan:CommonName"/>
     <input type="freetext" presence="onTagMatch" category="Naptan" description="" name="Naptan Indicator (read-only)" key="naptan:Indicator"/>
@@ -527,7 +525,7 @@ Quick documentation:
 <!-- Would be good to have a dedicated 'access' type of input -->
   <!-- all the description fields are identical at the moment for ease of maintenance, should be tailored in future. -->
   <inputSet id="boatPermissions">
-    <input type="choice" name="ボートの許可" category="通行許可" key="boat" description="Are boats allowed to use this waterway?">
+    <input type="choice" name="Boat permission" category="Permission" key="boat" description="Are boats allowed to use this waterway?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -537,7 +535,7 @@ Quick documentation:
   </inputSet>
 
   <inputSet id="permissions">
-    <input type="choice" name="一般通航" category="通行許可" key="access" description="Is there a general right of access, regardless of mode of transport?">
+    <input type="choice" name="General access" category="Permission" key="access" description="Is there a general right of access, regardless of mode of transport?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -545,7 +543,7 @@ Quick documentation:
       <choice value="designated" text="Designated" description="Permitted, according to signs or specific local laws."/>
     </input>
 
-    <input type="choice" name="自動車" category="通行許可" key="motor_vehicle" description="Are cars and other private vehicles allowed?">
+    <input type="choice" name="Motor vehicles" category="Permission" key="motor_vehicle" description="Are cars and other private vehicles allowed?">
       <choice value="yes" text="Allowed" description="General right of way."/>
       <choice value="no" text="Prohibited" description="No access to the public."/>
       <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
@@ -553,40 +551,40 @@ Quick documentation:
       <choice value="designated" text="Designated" description="Permitted, according to signs or specific local laws."/>
     </input>
 
-    <input type="choice" name="Horses" category="通行許可" key="horse" description="Are cars and other private vehicles allowed?">
-      <choice value="yes" text="許可" description="一般に通行可能"/>
-      <choice value="no" text="禁止" description="公衆は通行できない"/>
-      <choice value="permissive" text="許諾" description="私道の通行が許諾されている"/>
-      <choice value="private" text="私道" description="公衆は通行できない。ただし、特定個人の例外有り。"/>
-      <choice value="designated" text="規定" description="交通標識にしたがって、あるいは特別な法律で許可される。"/>
+    <input type="choice" name="Horses" category="Permission" key="horse" description="Are cars and other private vehicles allowed?">
+      <choice value="yes" text="Allowed" description="General right of way."/>
+      <choice value="no" text="Prohibited" description="No access to the public."/>
+      <choice value="permissive" text="Permissive" description="Access permitted through private land."/>
+      <choice value="private" text="Private" description="No access to the public, except individual exceptions."/>
+      <choice value="designated" text="Designated" description="Permitted, according to signs or specific local laws."/>
     </input>
 
   </inputSet>
 
   <inputSet id="places">
-    <input type="choice" name="場所の種類" presence="always" key="place">
-      <choice value="locality" text="ローカル"/>
-      <choice value="hamlet" text="ハムレット"/>
-      <choice value="village" text="ビレッジ"/>
-      <choice value="suburb" text="サバーブ"/>
-      <choice value="town" text="街"/>
-      <choice value="city" text="市"/>
-      <choice value="county" text="郡（カウンティ）"/>
-      <choice value="region" text="リージョン"/>
-      <choice value="state" text="ステート・州"/>
-      <choice value="country" text="国"/>
-      <choice value="continent" text="大陸"/>
-      <choice value="island" text="島"/>
-      <choice value="islet" text="イスレット"/>
+    <input type="choice" name="Type of Place" presence="always" key="place">
+      <choice value="locality" text="Locality"/>
+      <choice value="hamlet" text="Hamlet"/>
+      <choice value="village" text="Village"/>
+      <choice value="suburb" text="Suburb"/>
+      <choice value="town" text="Town"/>
+      <choice value="city" text="City"/>
+      <choice value="county" text="County"/>
+      <choice value="region" text="Region"/>
+      <choice value="state" text="State"/>
+      <choice value="country" text="Country"/>
+      <choice value="continent" text="Continent"/>
+      <choice value="island" text="Island"/>
+      <choice value="islet" text="Islet"/>
     </input>
   </inputSet>
 
   <inputSet id="isBuilding">
-    <input type="checkbox" presence="onTagMatch" category="その他" description="このタグはひとつの建物を表しているか？" name="建物" key="building"/>
+    <input type="checkbox" presence="onTagMatch" category="Misc" description="Does this thing also represent one, solid building?" name="Building" key="building"/>
   </inputSet>
 
   <inputSet id="powerCables">
-    <input type="choice" name="ケーブル" key="cables" presence="always" category="電力">
+    <input type="choice" name="Cables" key="cables" presence="always" category="Power">
       <choice value="2" text="2"/>
       <choice value="3" text="3"/>
       <choice value="4" text="4"/>
@@ -595,7 +593,7 @@ Quick documentation:
       <choice value="10" text="10"/>
       <choice value="12" text="12"/>
     </input>
-    <input type="choice" name="電圧" key="voltage" presence="always" category="電力">
+    <input type="choice" name="Voltage" key="voltage" presence="always" category="Power">
       <!-- choices based on http://osmdoc.com/en/tag/voltage/#values-->
       <choice value="400" text="400 V"/>
       <choice value="600" text="600 V"/>
@@ -614,42 +612,43 @@ Quick documentation:
   </inputSet>
 
   <inputSet id="pitchSport">
-    <input name="スポーツ" presence="always" category="スポーツ" key="sport" type="choice" description="主に行われるスポーツの種類">
-      <choice value="9pin" text="９ピンボーリング"/>
-      <choice value="10pin" text="１０ピンボーリング"/>
-      <choice value="american_football" text="アメフト"/>
-      <choice value="archery" text="アーチェリー"/>
-      <choice value="athletics" text="アスレチック"/>
-      <choice value="australian_football" text="オーストラリア式フットボール"/>
-      <choice value="baseball" text="野球"/>
-      <choice value="basketball" text="バスケットボール"/>
-      <choice value="beachvolleyball" text="ビーチバレー"/>
-      <choice value="boules" text="ブール/ペタンク/ボッチ"/>
-      <choice value="bowls" text="Lawnボウル"/>
-      <choice value="canadian_football" text="カナダ式フットボール"/>
-      <choice value="chess" text="チェス"/>
-      <choice value="cricket" text="クリケット"/>
-      <choice value="cricket_nets" text="クリケット nets"/>
-      <choice value="croquet" text="クロケット"/>
-      <choice value="equestrian" text="エクエストリアン"/>
-      <choice value="gaelic_football" text="Gaelic フットボール"/>
-      <choice value="gymnastics" text="ジムナスティクス"/>
-      <choice value="team_handball" text="ハンドボール"/>
-      <choice value="hockey" text="（フィールドの）ホッケー"/>
-      <choice value="korfball" text="コーフボール"/>
-      <choice value="pelota" text="ペロタ"/>
-      <choice value="rugby_league" text="ラグビーリーグ"/>
-      <choice value="rugby_union" text="らぐびーゆにおん"/>
-      <choice value="shooting" text="射撃"/>
-      <choice value="skating" text="アイススケート"/>
-      <choice value="skateboard" text="スケートボード"/>
-      <choice value="soccer" text="サッカー"/>
-      <choice value="swimming" text="水泳"/>
-      <choice value="table_tennis" text="卓球"/>
-      <choice value="tennis" text="テニス"/>
-      <choice value="volleyball" text="バレーボール"/>
+    <input name="Sport" presence="always" category="Sport" key="sport" type="choice" description="The sport that is predominantly played here.">
+      <choice value="9pin" text="9 pin bowling"/>
+      <choice value="10pin" text="10 pin bowling"/>
+      <choice value="american_football" text="American football"/>
+      <choice value="archery" text="Archery"/>
+      <choice value="athletics" text="Athletics"/>
+      <choice value="australian_football" text="Australian Rules Football"/>
+      <choice value="baseball" text="Baseball"/>
+      <choice value="basketball" text="Basketball"/>
+      <choice value="beachvolleyball" text="Beach volleyball"/>
+      <choice value="boules" text="Boules/petanque/bocci"/>
+      <choice value="bowls" text="Lawn bowls"/>
+      <choice value="canadian_football" text="Canadian football"/>
+      <choice value="chess" text="Chess"/>
+      <choice value="cricket" text="Cricket"/>
+      <choice value="cricket_nets" text="Cricket nets"/>
+      <choice value="croquet" text="Croquet"/>
+      <choice value="equestrian" text="Equestrian"/>
+      <choice value="gaelic_football" text="Gaelic football"/>
+      <choice value="gymnastics" text="Gymnastics"/>
+      <choice value="team_handball" text="(Team) handball"/>
+      <choice value="hockey" text="(Field) hockey"/>
+      <choice value="korfball" text="Korfball"/>
+      <choice value="pelota" text="Pelota"/>
+      <choice value="rugby_league" text="Rugby league"/>
+      <choice value="rugby_union" text="Rugby union"/>
+      <choice value="shooting" text="Shooting"/>
+      <choice value="skating" text="Ice skating"/>
+      <choice value="skateboard" text="Skateboarding"/>
+      <choice value="soccer" text="Soccer/football"/>
+      <choice value="swimming" text="Swimming"/>
+      <choice value="table_tennis" text="Table tennis"/>
+      <choice value="tennis" text="Tennis"/>
+      <choice value="volleyball" text="Volleyball"/>
     </input>
   </inputSet>
+
 
 <!-- Features -->
 
